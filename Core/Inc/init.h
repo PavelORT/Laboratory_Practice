@@ -34,3 +34,5 @@ void GPIO_Init_Self(void);
 void GPIO_Init_CMSIS(void);
 void ITR_Init(void); 
 void SysTick_Init(void); 
+void TIM_Init();
+void ADC_Init(void); 

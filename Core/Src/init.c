@@ -1,9 +1,10 @@
 #include "../Inc/init.h"
+#include "../Inc/it_handlers.h"
 
 void GPIO_Init_Self(void)
 {
     //set LED 3 (pin14)
-    RCC_AHB1ENR |= RCC_GPIOB_EN | RCC_GPIOC_EN; //Включение тактирования портов GPIOB и GPIOC
+    //RCC_AHB1ENR |= RCC_GPIOB_EN | RCC_GPIOC_EN; //Включение тактирования портов GPIOB и GPIOC
     *(uint32_t*)(0x40020400UL) |= 0x10000000UL;//Настройка работы 14-го пина GPIOB в режиме вывода сигнала (Output mode)
     *(uint32_t*)(0x40020400UL + 0x04UL) |= 0x0000UL; //Настройка на Push-Pull работу 14-го пина GPIOB (Output Push-Pull)
     *(uint32_t*)(0x40020400UL + 0x08UL) |= 0x10000000UL; //Настройка скорости работы 14-го пина GPIOB на среднюю
@@ -18,7 +19,7 @@ void GPIO_Init_Self(void)
 }
 void GPIO_Init_CMSIS(void)
 {
-    //SET_BIT(RCC->AHB1ENR, RCC_AHB1ENR_GPIOBEN | RCC_AHB1ENR_GPIOCEN); //Включение тактирования портов GPIOB и GPIOC
+    SET_BIT(RCC->AHB1ENR, RCC_AHB1ENR_GPIOBEN | RCC_AHB1ENR_GPIOCEN); //Включение тактирования портов GPIOB и GPIOC
     //set LED 2 (pin7)
     SET_BIT(GPIOB->MODER, GPIO_MODER_MODE7_0); //Настройка работы 7-го пина GPIOB в режиме вывода сигнала (Output mode)
     CLEAR_BIT(GPIOB->OTYPER, GPIO_OTYPER_OT7);//Настройка на Push-Pull работу 7-го пина GPIOB (Output Push-Pull)
@@ -33,13 +34,13 @@ void GPIO_Init_CMSIS(void)
     SET_BIT(GPIOB->BSRR, GPIO_BSRR_BR8);//сброс BSRR, выключение светодиода 8-го пина GPIOB
     SET_BIT(GPIOB->MODER, GPIO_MODER_MODE8_0); //Настройка работы 8-го пина GPIOB в режиме вывода сигнала (Output mode)
      //set LED 5 (pin9)
-     SET_BIT(GPIOB->MODER, GPIO_MODER_MODE9_0);
+    SET_BIT(GPIOB->MODER, GPIO_MODER_MODE9_0);
     CLEAR_BIT(GPIOB->OTYPER, GPIO_OTYPER_OT9);//Настройка на Push-Pull работу 9-го пина GPIOB (Output Push-Pull)
     SET_BIT(GPIOB->OSPEEDR, GPIO_OSPEEDER_OSPEEDR9_0);//Настройка скорости работы 9-го пина GPIOB на среднюю
     CLEAR_BIT(GPIOB->PUPDR, GPIO_PUPDR_PUPDR9_0);//Отключение PU/PD резисторов для 9-го пина GPIOB
     SET_BIT(GPIOB->BSRR, GPIO_BSRR_BR9);//сброс BSRR, выключение светодиода 9-го пина GPIOB
     //set LED 6 (pin10)
-     SET_BIT(GPIOB->MODER, GPIO_MODER_MODE10_0);
+    SET_BIT(GPIOB->MODER, GPIO_MODER_MODE10_0);
     CLEAR_BIT(GPIOB->OTYPER, GPIO_OTYPER_OT10);//Настройка на Push-Pull работу 10-го пина GPIOB (Output Push-Pull)
     SET_BIT(GPIOB->OSPEEDR, GPIO_OSPEEDER_OSPEEDR10_0);//Настройка скорости работы 10-го пина GPIOB на среднюю
     CLEAR_BIT(GPIOB->PUPDR, GPIO_PUPDR_PUPDR10_0);//Отключение PU/PD резисторов для 10-го пина GPIOB
@@ -49,6 +50,15 @@ void GPIO_Init_CMSIS(void)
     SET_BIT(GPIOC->MODER, GPIO_MODER_MODER9_1); 
     SET_BIT(GPIOC->OSPEEDR, GPIO_OSPEEDR_OSPEED9_Msk); //Настраиваем пин на максимальную скорость работы 
     MODIFY_REG(GPIOC->AFR[1], GPIO_AFRH_AFSEL9_Msk, 0x0); //Выбираем тип альтернативной функции – Выход MCO2
+    
+    //Настройка пина PB1 на аналоговый вход для АЦП (ADC12_IN9)
+
+    SET_BIT(GPIOB->MODER, GPIO_MODER_MODE1_Msk);
+    CLEAR_BIT(GPIOB->OTYPER, GPIO_OTYPER_OT1);//Настройка на Push-Pull 
+    SET_BIT(GPIOB->OSPEEDR, GPIO_OSPEEDER_OSPEEDR1_0);//Настройка скорости работы 
+    //SET_BIT(GPIOB->OSPEEDR, GPIO_OSPEEDER_OSPEEDR1_0 | GPIO_OSPEEDER_OSPEEDR11_1);//Настройка скорости работы 
+    CLEAR_BIT(GPIOB->PUPDR, GPIO_PUPDR_PUPDR1_0);//Отключение PU/PD резисторов
+    
     
 }
 
@@ -119,3 +129,32 @@ void SysTick_Init(void){
     MODIFY_REG(SysTick->VAL, SysTick_VAL_CURRENT_Msk, SYSTLOAD << SysTick_VAL_CURRENT_Pos); //Начнём считать со значения 17999
     SET_BIT(SysTick->CTRL, SysTick_CTRL_ENABLE_Msk); //Включим счётчик 
 } 
+
+void TIM_Init()
+{
+    //Включение таймеров
+    SET_BIT(RCC->APB1ENR,RCC_APB1ENR_TIM2EN); //32 бита 4 канала
+    SET_BIT(RCC->APB2ENR,RCC_APB2ENR_TIM1EN); //ШИМ 16 бит 4 канала
+}
+
+void ADC_Init(void)
+{
+    SET_BIT(ADC->CCR,ADC_CCR_ADCPRE_0);//предделитель АЦП
+    SET_BIT(RCC->APB2ENR, RCC_APB2ENR_ADC1EN); //Включение тактированияе АЦП
+    CLEAR_REG(ADC1->CR1); //Сброс битов
+    CLEAR_REG(ADC1->CR2); //Сброс битов
+    CLEAR_BIT(ADC1->CR2, ADC_CR2_ADON);// Выключение АЦП1
+    CLEAR_BIT(ADC1->CR1, ADC_CR1_RES);// Установка разрешения АЦП1 на 12 бит
+    //SET_BIT(ADC1->CR2, ADC_CR2_CONT);// Включение непрерывных преобразований
+    //SET_BIT(ADC1->CR1,ADC_CR1_OVRIE); // Включение прерываний overrun
+    SET_BIT(ADC1->SQR1, ADC_SQR1_L_0); // число регулярных каналов 1
+    SET_BIT(ADC1->SQR2, ADC_SQR3_SQ1_3);// первое преобразование - канал 9
+    
+    CLEAR_BIT(ADC1->SMPR2, ADC_SMPR2_SMP9); //установка времени обработки канала 9
+    
+    CLEAR_BIT(ADC1->CR2, ADC_CR2_EXTSEL); // выбор TIM1 CC1 event как источника запуска преобразований
+    SET_BIT(ADC1->CR2, ADC_CR2_EXTEN_0); //Включение внешнего триггера для обычных каналов по фронту 1-подъём, 2-спуск, 3-подъём/спуск
+    SET_BIT(ADC1->CR2, ADC_CR2_ADON);// Включение АЦП1
+    SET_BIT(ADC1->CR2, ADC_CR2_SWSTART); // запуск преобразования
+    //ADC_DR - место хранения данных
+}
