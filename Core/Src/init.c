@@ -145,16 +145,16 @@ void ADC_Init(void)
     CLEAR_REG(ADC1->CR2); //Сброс битов
     CLEAR_BIT(ADC1->CR2, ADC_CR2_ADON);// Выключение АЦП1
     CLEAR_BIT(ADC1->CR1, ADC_CR1_RES);// Установка разрешения АЦП1 на 12 бит
-    //SET_BIT(ADC1->CR2, ADC_CR2_CONT);// Включение непрерывных преобразований
+    SET_BIT(ADC1->CR2, ADC_CR2_CONT);// Включение непрерывных преобразований
     //SET_BIT(ADC1->CR1,ADC_CR1_OVRIE); // Включение прерываний overrun
-    SET_BIT(ADC1->SQR1, ADC_SQR1_L_0); // число регулярных каналов 1
-    SET_BIT(ADC1->SQR2, ADC_SQR3_SQ1_3);// первое преобразование - канал 9
+    CLEAR_BIT(ADC1->SQR1, ADC_SQR1_L); // число регулярных каналов 1
+    SET_BIT(ADC1->SQR3, ADC_SQR3_SQ1_3);// первое преобразование - канал 9
     
-    CLEAR_BIT(ADC1->SMPR2, ADC_SMPR2_SMP9); //установка времени обработки канала 9
+    CLEAR_BIT(ADC1->SMPR2, ADC_SMPR2_SMP8); //установка времени обработки канала 9
     
-    CLEAR_BIT(ADC1->CR2, ADC_CR2_EXTSEL); // выбор TIM1 CC1 event как источника запуска преобразований
-    SET_BIT(ADC1->CR2, ADC_CR2_EXTEN_0); //Включение внешнего триггера для обычных каналов по фронту 1-подъём, 2-спуск, 3-подъём/спуск
+    //CLEAR_BIT(ADC1->CR2, ADC_CR2_EXTSEL); // выбор TIM1 CC1 event как источника запуска преобразований
+    //SET_BIT(ADC1->CR2, ADC_CR2_EXTEN_0); //Включение внешнего триггера для обычных каналов по фронту 1-подъём, 2-спуск, 3-подъём/спуск
     SET_BIT(ADC1->CR2, ADC_CR2_ADON);// Включение АЦП1
-    SET_BIT(ADC1->CR2, ADC_CR2_SWSTART); // запуск преобразования
+    // SET_BIT(ADC1->CR2, ADC_CR2_SWSTART); // запуск преобразования
     //ADC_DR - место хранения данных
 }
