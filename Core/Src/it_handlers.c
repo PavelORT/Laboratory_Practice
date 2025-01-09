@@ -81,6 +81,25 @@ void SysTick_Handler(void)
     }
 } 
 
+void ADC_IRQHandler(void)
+{
+    CLEAR_BIT(ADC1->SR,ADC_SR_EOC);//сброс флага прерывания
+}
+
+void TIM1_UP_TIM10_IRQHandler(void)
+{
+    if (Led1flag == 0)
+    {
+        SET_BIT(GPIOB->BSRR, GPIO_BSRR_BS7);//включение светодиода 7-го пина GPIOB
+        Led1flag = 1;
+    }
+    else{
+        SET_BIT(GPIOB->BSRR, GPIO_BSRR_BR7);//выключение светодиода 7-го пина GPIOB
+        Led1flag = 0;
+    }
+    CLEAR_BIT(TIM1->SR,TIM_SR_UIF);//сброс флага прерывания таймера UIF
+}
+
 void mydelay(uint32_t delay){  
     if(DelayTickCount >= delay) DelayTickCount = 0;
     while(DelayTickCount < delay){} //Цикл, благодаря которому происходит задержка программы 

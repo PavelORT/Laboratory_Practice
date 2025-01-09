@@ -11,7 +11,9 @@ uint8_t LedCurrfreq[6][2] = {{0, 0},{0, 0},{0, 0},{0, 0},{0, 0},{0, 0}};
 uint16_t LedLoad[6] = {0, 0, 0, 0, 0, 0};
 uint16_t LedCount[6] = {0, 0, 0, 0, 0, 0};
 uint8_t Ledflag[2][6] = {{1, 1, 1, 1, 1, 1},{0, 0, 0, 0, 0, 0}};
+
 uint8_t Led1flag = 0;
+
 uint8_t Led2flag = 0;
 const uint8_t LedOffset[6] = {0U, 7U, 14U, 8U, 9U, 10U};
 uint8_t CurrentState = 6;
@@ -44,9 +46,8 @@ int main(void)
         // измерение сигнала
         // SET_BIT(ADC1->CR2, ADC_CR2_SWSTART); // запуск преобразования
         // while(!(ADC1->SR & ADC_SR_EOC)); // ожидание завершения преобразования
-        // res = (float)ADC1->DR * 3.3 / 4096.0 ; // пересчет в напряжение
-        adc = ADC1->DR;
+        res = (float)ADC1->DR * 3.3 / 4096.0 ; // пересчет в напряжение
+        //adc = ADC1->DR;
         mydelay(300);
     }
-    
 } 

@@ -110,14 +110,14 @@ void ITR_Init(void){
     SET_BIT(EXTI->IMR, EXTI_IMR_MR13); //Настройка маскирования 13 линии 
     SET_BIT(EXTI->RTSR, EXTI_RTSR_TR13); //Настройка детектирования нарастающего фронта 13 линии 
     SET_BIT(EXTI->FTSR, EXTI_FTSR_TR13); //Настройка детектирования спадающего фронта 13 линии 
-    NVIC_SetPriority(EXTI15_10_IRQn, NVIC_EncodePriority(NVIC_GetPriorityGrouping(), 2, 0)); //Установка 2 приоритета прерывания для вектора EXTI15_10 
+    NVIC_SetPriority(EXTI15_10_IRQn, NVIC_EncodePriority(NVIC_GetPriorityGrouping(), 7, 0)); //Установка 7 приоритета прерывания для вектора EXTI15_10 
     NVIC_EnableIRQ(EXTI15_10_IRQn); //Включение прерывания по вектору EXTI15_10 
     
     MODIFY_REG(SYSCFG->EXTICR[1], SYSCFG_EXTICR2_EXTI6_Msk, SYSCFG_EXTICR2_EXTI6_PC); //Настройка мультиплексора на вывод линии прерывания EXTI13 на PC6 
     SET_BIT(EXTI->IMR, EXTI_IMR_MR6); //Настройка маскирования 6 линии 
     SET_BIT(EXTI->RTSR, EXTI_RTSR_TR6); //Настройка детектирования нарастающего фронта 6 линии 
     SET_BIT(EXTI->FTSR, EXTI_FTSR_TR6); //Настройка детектирования спадающего фронта 6 линии 
-    NVIC_SetPriority(EXTI9_5_IRQn , NVIC_EncodePriority(NVIC_GetPriorityGrouping(), 2, 0)); //Установка 2 приоритета прерывания для вектора EXTI9_5 
+    NVIC_SetPriority(EXTI9_5_IRQn , NVIC_EncodePriority(NVIC_GetPriorityGrouping(), 7, 0)); //Установка 7 приоритета прерывания для вектора EXTI9_5 
     NVIC_EnableIRQ(EXTI9_5_IRQn); //Включение прерывания по вектору EXTI9_5
 } 
 
@@ -133,8 +133,38 @@ void SysTick_Init(void){
 void TIM_Init()
 {
     //Включение таймеров
-    SET_BIT(RCC->APB1ENR,RCC_APB1ENR_TIM2EN); //32 бита 4 канала
-    SET_BIT(RCC->APB2ENR,RCC_APB2ENR_TIM1EN); //ШИМ 16 бит 4 канала
+    //TIM1
+    SET_BIT(RCC->APB2ENR,RCC_APB2ENR_TIM1EN); //включение тактирования TIM1 16 бит 4 канала
+    
+    CLEAR_BIT(TIM1->SMCR,TIM_SMCR_SMS);//выключаем slave mode, чтобы тактировался напрямую от APB
+    CLEAR_REG(TIM1->CR1); //Сброс битов
+    CLEAR_REG(TIM1->CR2); //Сброс битов
+    SET_BIT(TIM1->CR1,TIM_CR1_DIR);//down направление счёта 0-up 1-dowm
+    CLEAR_BIT(TIM1->CR1,TIM_CR1_CMS);//center-aligned mode выключен
+    SET_BIT(TIM1->DIER,TIM_DIER_UIE);//включение прерываний
+    MODIFY_REG(TIM1->PSC,TIM_PSC_PSC,17999);//настройка предделителя
+    MODIFY_REG(TIM1->ARR,TIM_ARR_ARR,1000);//настрока значения перезагрузки
+    //В результате 0.1 c
+    NVIC_EnableIRQ(TIM1_UP_TIM10_IRQn);//разрешаем прерывания в регистре контроллера прерываний NVIC
+    NVIC_SetPriority(TIM1_UP_TIM10_IRQn, NVIC_EncodePriority(NVIC_GetPriorityGrouping(), 3, 0)); //Установка приоритета прерывания
+    SET_BIT(TIM1->CR1,TIM_CR1_CEN);//включение TIM1
+    SET_BIT(TIM1->EGR,TIM_EGR_UG);//Перезагружаем счётчик TIM1
+    
+
+    /*
+    //TIM2 не настроен
+    SET_BIT(RCC->APB1ENR,RCC_APB1ENR_TIM2EN); //включение тактирования TIM2 32 бита 4 канала
+    
+    CLEAR_BIT(TIM2->SMCR,TIM_SMCR_SMS);//выключаем slave mode, чтобы тактировался напрямую от APB
+    CLEAR_REG(TIM2->CR1); //Сброс битов
+    CLEAR_REG(TIM2->CR2); //Сброс битов
+    CLEAR_BIT(TIM2->CR1,TIM_CR1_DIR);//up направление счёта 0-up 1-dowm
+    CLEAR_BIT(TIM2->CR1,TIM_CR1_CMS);//center-aligned mode выключен
+    SET_BIT(TIM2->DIER,TIM_DIER_UIE);//включение прерываний
+    
+    SET_BIT(TIM2->CR1,TIM_CR1_CEN);//включение TIM2
+    SET_BIT(TIM2->EGR,TIM_EGR_UG);//Перезагружаем счётчик TIM2\
+    */
 }
 
 void ADC_Init(void)
@@ -146,7 +176,10 @@ void ADC_Init(void)
     CLEAR_BIT(ADC1->CR2, ADC_CR2_ADON);// Выключение АЦП1
     CLEAR_BIT(ADC1->CR1, ADC_CR1_RES);// Установка разрешения АЦП1 на 12 бит
     SET_BIT(ADC1->CR2, ADC_CR2_CONT);// Включение непрерывных преобразований
-    //SET_BIT(ADC1->CR1,ADC_CR1_OVRIE); // Включение прерываний overrun
+    //SET_BIT(ADC1->CR1,ADC_CR1_EOCIE); // Включение прерываний
+
+    //NVIC_EnableIRQ(ADC_IRQn);//разрешение прерываний NVIC
+    //NVIC_SetPriority(ADC_IRQn, NVIC_EncodePriority(NVIC_GetPriorityGrouping(), 5, 0)); //Установка приоритета прерывания
     CLEAR_BIT(ADC1->SQR1, ADC_SQR1_L); // число регулярных каналов 1
     SET_BIT(ADC1->SQR3, ADC_SQR3_SQ1_3);// первое преобразование - канал 9
     
