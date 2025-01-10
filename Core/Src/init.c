@@ -104,7 +104,7 @@ void TIM_Init()
     CLEAR_BIT(TIM1->CR1,TIM_CR1_CMS);//center-aligned mode выключен
     SET_BIT(TIM1->DIER,TIM_DIER_UIE);//включение прерываний
     MODIFY_REG(TIM1->PSC,TIM_PSC_PSC,8999);//настройка предделителя от APB2 90МГц
-    MODIFY_REG(TIM1->ARR,TIM_ARR_ARR,10000);//настрока значения перезагрузки
+    MODIFY_REG(TIM1->ARR,TIM_ARR_ARR,9999);//настрока значения перезагрузки
     //прерывание через 0.5 с
 
     NVIC_EnableIRQ(TIM1_UP_TIM10_IRQn);//разрешаем прерывания в регистре контроллера прерываний NVIC
@@ -123,7 +123,7 @@ void TIM_Init()
     CLEAR_BIT(TIM2->CR1,TIM_CR1_CMS);//center-aligned mode выключен
     SET_BIT(TIM2->DIER,TIM_DIER_UIE);//включение прерываний
     MODIFY_REG(TIM2->PSC,TIM_PSC_PSC,4499);//настройка предделителя тактирование от APB1 45МГц
-    MODIFY_REG(TIM2->ARR,TIM_ARR_ARR,10000);//настрока значения перезагрузки
+    MODIFY_REG(TIM2->ARR,TIM_ARR_ARR,9999);//настрока значения перезагрузки
     //прерывание через 0.5 с
     NVIC_EnableIRQ(TIM2_IRQn);//разрешаем прерывания в регистре контроллера прерываний NVIC
     NVIC_SetPriority(TIM2_IRQn, NVIC_EncodePriority(NVIC_GetPriorityGrouping(), 3, 0)); //Установка приоритета прерывания
