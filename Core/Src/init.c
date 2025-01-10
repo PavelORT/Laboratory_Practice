@@ -24,8 +24,8 @@ void GPIO_Init(void)
     CLEAR_BIT(GPIOA->PUPDR, GPIO_PUPDR_PUPDR15_0);//Отключение PU/PD
     MODIFY_REG(GPIOA->AFR[1], GPIO_AFRH_AFSEL15, 1); //выбор альтернативной функции
     
-    //Настройка пина PB1 на аналоговый вход для АЦП (ADC12_IN9)
 
+    //Настройка пина PB1 на аналоговый вход для АЦП (ADC12_IN9)
     SET_BIT(GPIOB->MODER, GPIO_MODER_MODE1_Msk);
     CLEAR_BIT(GPIOB->OTYPER, GPIO_OTYPER_OT1);//Настройка на Push-Pull 
     SET_BIT(GPIOB->OSPEEDR, GPIO_OSPEEDER_OSPEEDR1_0);//Настройка скорости работы 
@@ -122,7 +122,19 @@ void TIM_Init()
     
     //TIM2
     SET_BIT(RCC->APB1ENR,RCC_APB1ENR_TIM2EN); //включение тактирования TIM2 32 бита 4 канала
+    MODIFY_REG(TIM2->PSC,TIM_PSC_PSC,449);//настройка предделителя тактирование от APB1 45МГц
+    MODIFY_REG(TIM2->ARR,TIM_ARR_ARR,1000-1);//настрока значения перезагрузки
     
+	//SET_BIT(TIM2->BDTR,TIM_BDTR_MOE);//разрешим использовать выводы таймера как выходы для TIM1
+
+    MODIFY_REG(TIM2->CCR1,TIM_CCR1_CCR1, 499);//настройка значения переключения ШИМ от 0 до 1000
+    SET_BIT(TIM2->CCER,TIM_CCER_CC1E);//включение выхода
+    SET_BIT(TIM2->CCMR1,TIM_CCMR1_OC1M_1 | TIM_CCMR1_OC1M_2);//Настройка на режим ШИМа
+    //SET_BIT(TIM2->EGR,TIM_EGR_UG);//Перезагружаем счётчик TIM2
+    SET_BIT(TIM2->CR1,TIM_CR1_CEN);//включение TIM2
+    
+
+    /*
     CLEAR_BIT(TIM2->SMCR,TIM_SMCR_SMS);//выключаем slave mode, чтобы тактировался напрямую от APB
     CLEAR_REG(TIM2->CR1); //Сброс битов
     CLEAR_REG(TIM2->CR2); //Сброс битов
@@ -154,6 +166,7 @@ void TIM_Init()
     
     SET_BIT(TIM2->EGR,TIM_EGR_UG);//Перезагружаем счётчик TIM2
     SET_BIT(TIM2->CR1,TIM_CR1_CEN);//включение TIM2
+    */
     
     
 }

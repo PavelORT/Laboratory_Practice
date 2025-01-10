@@ -36,8 +36,9 @@ extern uint32_t TIM2_counter;
 
 void TIM2_IRQHandler(void)
 {
+    //сброс флага прерывания таймера UIF
     CLEAR_BIT(TIM2->SR,TIM_SR_UIF);
-    if (Led2flag == 0)
+    /*if (Led2flag == 0)
     {
         SET_BIT(GPIOB->BSRR, GPIO_BSRR_BS14);//включение светодиода 14-го пина GPIOB
         Led2flag = 1;
@@ -46,11 +47,9 @@ void TIM2_IRQHandler(void)
         SET_BIT(GPIOB->BSRR, GPIO_BSRR_BR14);//выключение светодиода 14-го пина GPIOB
         Led2flag = 0;
     }
-    TIM2_counter++;
-    //сброс флага прерывания таймера UIF
+    TIM2_counter++;*/
+    
 }
-
-
 
 void mydelay(uint32_t delay){  
     if(DelayTickCount >= delay) DelayTickCount = 0;
