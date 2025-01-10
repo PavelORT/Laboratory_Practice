@@ -22,6 +22,7 @@ void GPIO_Init_CMSIS(void)
     CLEAR_BIT(GPIOA->OTYPER, GPIO_OTYPER_OT15);//push-pull
     SET_BIT(GPIOA->OSPEEDR, GPIO_OSPEEDER_OSPEEDR15_0 | GPIO_OSPEEDER_OSPEEDR15_1);//ставим скорость на максимум
     CLEAR_BIT(GPIOA->PUPDR, GPIO_PUPDR_PUPDR15_0);//Отключение PU/PD
+    MODIFY_REG(GPIOA->AFR[1], GPIO_AFRH_AFSEL15, 0x1); //выбор альтернативной функции
     
     //Настройка пина PB1 на аналоговый вход для АЦП (ADC12_IN9)
 
@@ -102,7 +103,7 @@ void TIM_Init()
     //Включение таймеров
     //TIM1
     SET_BIT(RCC->APB2ENR,RCC_APB2ENR_TIM1EN); //включение тактирования TIM1 16 бит 4 канала
-    
+    /*
     CLEAR_BIT(TIM1->SMCR,TIM_SMCR_SMS);//выключаем slave mode, чтобы тактировался напрямую от APB
     CLEAR_REG(TIM1->CR1); //Сброс битов
     CLEAR_REG(TIM1->CR2); //Сброс битов
@@ -110,14 +111,14 @@ void TIM_Init()
     CLEAR_BIT(TIM1->CR1,TIM_CR1_CMS);//center-aligned mode выключен
     SET_BIT(TIM1->DIER,TIM_DIER_UIE);//включение прерываний
     MODIFY_REG(TIM1->PSC,TIM_PSC_PSC,8999);//настройка предделителя от APB2 90МГц
-    MODIFY_REG(TIM1->ARR,TIM_ARR_ARR,10000);//настрока значения перезагрузки
+    MODIFY_REG(TIM1->ARR,TIM_ARR_ARR,9999);//настрока значения перезагрузки
     //прерывание через 0.5 с
 
     NVIC_EnableIRQ(TIM1_UP_TIM10_IRQn);//разрешаем прерывания в регистре контроллера прерываний NVIC
     NVIC_SetPriority(TIM1_UP_TIM10_IRQn, NVIC_EncodePriority(NVIC_GetPriorityGrouping(), 3, 0)); //Установка приоритета прерывания
     SET_BIT(TIM1->CR1,TIM_CR1_CEN);//включение TIM1
     SET_BIT(TIM1->EGR,TIM_EGR_UG);//Перезагружаем счётчик TIM1
-
+    */
     
     //TIM2
     SET_BIT(RCC->APB1ENR,RCC_APB1ENR_TIM2EN); //включение тактирования TIM2 32 бита 4 канала
@@ -129,12 +130,18 @@ void TIM_Init()
     CLEAR_BIT(TIM2->CR1,TIM_CR1_CMS);//center-aligned mode выключен
     SET_BIT(TIM2->DIER,TIM_DIER_UIE);//включение прерываний
     MODIFY_REG(TIM2->PSC,TIM_PSC_PSC,4499);//настройка предделителя тактирование от APB1 45МГц
-    MODIFY_REG(TIM2->ARR,TIM_ARR_ARR,10000);//настрока значения перезагрузки
+    MODIFY_REG(TIM2->ARR,TIM_ARR_ARR,9999);//настрока значения перезагрузки
     //прерывание через 0.5 с
-    NVIC_EnableIRQ(TIM2_IRQn);//разрешаем прерывания в регистре контроллера прерываний NVIC
+    
+    SET_BIT(TIM2->CCER,TIM_CCER_CC1E);//включение выхода
+    SET_BIT(TIM2->CCMR1,TIM_CCMR1_OC1M_1 | TIM_CCMR1_OC1M_2);//Настройка на режим ШИМа
+    MODIFY_REG(TIM2->CCR1,TIM_CCR1_CCR1, 4999);//настройка значения переключения ШИМ от 0 до 10000
+    /*NVIC_EnableIRQ(TIM2_IRQn);//разрешаем прерывания в регистре контроллера прерываний NVIC
     NVIC_SetPriority(TIM2_IRQn, NVIC_EncodePriority(NVIC_GetPriorityGrouping(), 3, 0)); //Установка приоритета прерывания
-    SET_BIT(TIM2->CR1,TIM_CR1_CEN);//включение TIM2
+    */
     SET_BIT(TIM2->EGR,TIM_EGR_UG);//Перезагружаем счётчик TIM2
+    SET_BIT(TIM2->CR1,TIM_CR1_CEN);//включение TIM2
+    
     
 }
 
@@ -152,9 +159,9 @@ void ADC_Init(void)
     //NVIC_EnableIRQ(ADC_IRQn);//разрешение прерываний NVIC
     //NVIC_SetPriority(ADC_IRQn, NVIC_EncodePriority(NVIC_GetPriorityGrouping(), 5, 0)); //Установка приоритета прерывания
     CLEAR_BIT(ADC1->SQR1, ADC_SQR1_L); // число регулярных каналов 1
-    SET_BIT(ADC1->SQR3, ADC_SQR3_SQ1_4);// первое преобразование - канал 9
+    SET_BIT(ADC1->SQR3, ADC_SQR3_SQ1_3 | ADC_SQR3_SQ1_0);// первое преобразование - канал 9
     
-    CLEAR_BIT(ADC1->SMPR2, ADC_SMPR2_SMP8); //установка времени обработки канала 9
+    CLEAR_BIT(ADC1->SMPR2, ADC_SMPR2_SMP9); //установка времени обработки канала 9
     
     //CLEAR_BIT(ADC1->CR2, ADC_CR2_EXTSEL); // выбор TIM1 CC1 event как источника запуска преобразований
     //SET_BIT(ADC1->CR2, ADC_CR2_EXTEN_0); //Включение внешнего триггера для обычных каналов по фронту 1-подъём, 2-спуск, 3-подъём/спуск

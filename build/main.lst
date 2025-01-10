@@ -1,4 +1,4 @@
-ARM GAS  C:\Users\rpong\AppData\Local\Temp\cc0YbdHO.s 			page 1
+ARM GAS  C:\Users\rpong\AppData\Local\Temp\cck30cnN.s 			page 1
 
 
    1              		.cpu cortex-m4
@@ -18,14 +18,18 @@ ARM GAS  C:\Users\rpong\AppData\Local\Temp\cc0YbdHO.s 			page 1
   15              	.Ltext0:
   16              		.cfi_sections	.debug_frame
   17              		.file 1 "Core/Src/main.c"
-  18              		.section	.text.main,"ax",%progbits
-  19              		.align	1
-  20              		.global	main
-  21              		.syntax unified
-  22              		.thumb
-  23              		.thumb_func
-  25              	main:
-  26              	.LFB130:
+  18              		.global	__aeabi_ui2f
+  19              		.global	__aeabi_f2d
+  20              		.global	__aeabi_dmul
+  21              		.global	__aeabi_d2f
+  22              		.section	.text.main,"ax",%progbits
+  23              		.align	1
+  24              		.global	main
+  25              		.syntax unified
+  26              		.thumb
+  27              		.thumb_func
+  29              	main:
+  30              	.LFB130:
    1:Core/Src/main.c **** #include "../Inc/init.h"
    2:Core/Src/main.c **** #include "../Inc/it_handlers.h"
    3:Core/Src/main.c **** 
@@ -40,129 +44,207 @@ ARM GAS  C:\Users\rpong\AppData\Local\Temp\cc0YbdHO.s 			page 1
   12:Core/Src/main.c **** uint32_t DelayTickCount = 0;
   13:Core/Src/main.c **** uint32_t TIM2_counter = 0;
   14:Core/Src/main.c **** uint32_t SYSTICK_counter = 0;
-  15:Core/Src/main.c **** 
-  16:Core/Src/main.c **** int main(void) 
-  17:Core/Src/main.c **** { 
-  27              		.loc 1 17 1 view -0
-  28              		.cfi_startproc
-  29              		@ Volatile: function does not return.
-  30              		@ args = 0, pretend = 0, frame = 0
-  31              		@ frame_needed = 0, uses_anonymous_args = 0
-  32 0000 08B5     		push	{r3, lr}
-  33              	.LCFI0:
-  34              		.cfi_def_cfa_offset 8
-  35              		.cfi_offset 3, -8
-  36              		.cfi_offset 14, -4
-  18:Core/Src/main.c ****     GPIO_Init_CMSIS();
-  37              		.loc 1 18 5 view .LVU1
-  38 0002 FFF7FEFF 		bl	GPIO_Init_CMSIS
-  39              	.LVL0:
-  19:Core/Src/main.c ****     RCC_Init(); // Инициализация тактирования системы 
-ARM GAS  C:\Users\rpong\AppData\Local\Temp\cc0YbdHO.s 			page 2
+  15:Core/Src/main.c **** uint32_t PWM_Load = 4999;
+  16:Core/Src/main.c **** 
+  17:Core/Src/main.c **** int main(void) 
+  18:Core/Src/main.c **** { 
+  31              		.loc 1 18 1 view -0
+  32              		.cfi_startproc
+  33              		@ Volatile: function does not return.
+  34              		@ args = 0, pretend = 0, frame = 0
+  35              		@ frame_needed = 0, uses_anonymous_args = 0
+  36 0000 08B5     		push	{r3, lr}
+  37              	.LCFI0:
+  38              		.cfi_def_cfa_offset 8
+  39              		.cfi_offset 3, -8
+  40              		.cfi_offset 14, -4
+ARM GAS  C:\Users\rpong\AppData\Local\Temp\cck30cnN.s 			page 2
 
 
-  40              		.loc 1 19 5 view .LVU2
-  41 0006 FFF7FEFF 		bl	RCC_Init
-  42              	.LVL1:
-  20:Core/Src/main.c ****     ITR_Init();// Инициализация прерываний  
-  43              		.loc 1 20 5 view .LVU3
-  44 000a FFF7FEFF 		bl	ITR_Init
-  45              	.LVL2:
-  21:Core/Src/main.c ****     SysTick_Init();
-  46              		.loc 1 21 5 view .LVU4
-  47 000e FFF7FEFF 		bl	SysTick_Init
-  48              	.LVL3:
-  22:Core/Src/main.c ****     TIM_Init();
-  49              		.loc 1 22 5 view .LVU5
-  50 0012 FFF7FEFF 		bl	TIM_Init
-  51              	.LVL4:
-  52              	.L2:
-  23:Core/Src/main.c ****     //ADC_Init();
-  24:Core/Src/main.c **** 
-  25:Core/Src/main.c ****     while(1) {
-  53              		.loc 1 25 5 view .LVU6
-  26:Core/Src/main.c ****         /*
-  27:Core/Src/main.c ****         SET_BIT(ADC1->CR2, ADC_CR2_SWSTART); // запуск преобразования
+  19:Core/Src/main.c ****     GPIO_Init_CMSIS();
+  41              		.loc 1 19 5 view .LVU1
+  42 0002 FFF7FEFF 		bl	GPIO_Init_CMSIS
+  43              	.LVL0:
+  20:Core/Src/main.c ****     RCC_Init(); // Инициализация тактирования системы 
+  44              		.loc 1 20 5 view .LVU2
+  45 0006 FFF7FEFF 		bl	RCC_Init
+  46              	.LVL1:
+  21:Core/Src/main.c ****     ITR_Init();// Инициализация прерываний  
+  47              		.loc 1 21 5 view .LVU3
+  48 000a FFF7FEFF 		bl	ITR_Init
+  49              	.LVL2:
+  22:Core/Src/main.c ****     SysTick_Init();
+  50              		.loc 1 22 5 view .LVU4
+  51 000e FFF7FEFF 		bl	SysTick_Init
+  52              	.LVL3:
+  23:Core/Src/main.c ****     TIM_Init();
+  53              		.loc 1 23 5 view .LVU5
+  54 0012 FFF7FEFF 		bl	TIM_Init
+  55              	.LVL4:
+  24:Core/Src/main.c ****     ADC_Init();
+  56              		.loc 1 24 5 view .LVU6
+  57 0016 FFF7FEFF 		bl	ADC_Init
+  58              	.LVL5:
+  59              	.L3:
+  25:Core/Src/main.c **** 
+  26:Core/Src/main.c ****     while(1) {
+  60              		.loc 1 26 5 view .LVU7
+  27:Core/Src/main.c ****         
   28:Core/Src/main.c ****         // измерение сигнала
-  29:Core/Src/main.c ****         // SET_BIT(ADC1->CR2, ADC_CR2_SWSTART); // запуск преобразования
-  30:Core/Src/main.c ****         // while(!(ADC1->SR & ADC_SR_EOC)); // ожидание завершения преобра
+  29:Core/Src/main.c ****         SET_BIT(ADC1->CR2, ADC_CR2_SWSTART); // запуск преобразования
+  61              		.loc 1 29 9 view .LVU8
+  62 001a 154A     		ldr	r2, .L5+8
+  63 001c 9368     		ldr	r3, [r2, #8]
+  64 001e 43F08043 		orr	r3, r3, #1073741824
+  65 0022 9360     		str	r3, [r2, #8]
+  30:Core/Src/main.c ****         while(!(ADC1->SR & ADC_SR_EOC)); // ожидание завершения преобраз�
+  66              		.loc 1 30 9 view .LVU9
+  67              	.L2:
+  68              		.loc 1 30 15 discriminator 1 view .LVU10
+  69              		.loc 1 30 21 is_stmt 0 discriminator 1 view .LVU11
+  70 0024 124B     		ldr	r3, .L5+8
+  71 0026 1B68     		ldr	r3, [r3]
+  72              		.loc 1 30 15 discriminator 1 view .LVU12
+  73 0028 13F0020F 		tst	r3, #2
+  74 002c FAD0     		beq	.L2
   31:Core/Src/main.c ****         res = (float)ADC1->DR * 3.3 / 4096.0 ; // пересчет в напряжение
-  32:Core/Src/main.c ****         //adc = ADC1->DR;
+  75              		.loc 1 31 9 is_stmt 1 view .LVU13
+  76              		.loc 1 31 26 is_stmt 0 view .LVU14
+  77 002e 104C     		ldr	r4, .L5+8
+  78 0030 E06C     		ldr	r0, [r4, #76]
+  79              		.loc 1 31 15 view .LVU15
+  80 0032 FFF7FEFF 		bl	__aeabi_ui2f
+  81              	.LVL6:
+  82 0036 FFF7FEFF 		bl	__aeabi_f2d
+  83              	.LVL7:
+  84              		.loc 1 31 31 view .LVU16
+ARM GAS  C:\Users\rpong\AppData\Local\Temp\cck30cnN.s 			page 3
+
+
+  85 003a 0BA3     		adr	r3, .L5
+  86 003c D3E90023 		ldrd	r2, [r3]
+  87 0040 FFF7FEFF 		bl	__aeabi_dmul
+  88              	.LVL8:
+  89              		.loc 1 31 37 view .LVU17
+  90 0044 0022     		movs	r2, #0
+  91 0046 0B4B     		ldr	r3, .L5+12
+  92 0048 FFF7FEFF 		bl	__aeabi_dmul
+  93              	.LVL9:
+  94 004c FFF7FEFF 		bl	__aeabi_d2f
+  95              	.LVL10:
+  96              		.loc 1 31 13 view .LVU18
+  97 0050 094B     		ldr	r3, .L5+16
+  98 0052 1860     		str	r0, [r3]	@ float
+  32:Core/Src/main.c ****         adc = ADC1->DR;
+  99              		.loc 1 32 9 is_stmt 1 view .LVU19
+ 100              		.loc 1 32 19 is_stmt 0 view .LVU20
+ 101 0054 E26C     		ldr	r2, [r4, #76]
+ 102              		.loc 1 32 13 view .LVU21
+ 103 0056 094B     		ldr	r3, .L5+20
+ 104 0058 1A60     		str	r2, [r3]
   33:Core/Src/main.c ****         mydelay(300);
-  34:Core/Src/main.c ****         */
-  35:Core/Src/main.c ****     }
-  54              		.loc 1 35 5 view .LVU7
-  25:Core/Src/main.c ****         /*
-  55              		.loc 1 25 10 view .LVU8
-  56 0016 FEE7     		b	.L2
-  57              		.cfi_endproc
-  58              	.LFE130:
-  60              		.global	SYSTICK_counter
-  61              		.section	.bss.SYSTICK_counter,"aw",%nobits
-  62              		.align	2
-  65              	SYSTICK_counter:
-  66 0000 00000000 		.space	4
-  67              		.global	TIM2_counter
-  68              		.section	.bss.TIM2_counter,"aw",%nobits
-  69              		.align	2
-  72              	TIM2_counter:
-  73 0000 00000000 		.space	4
-  74              		.global	DelayTickCount
-  75              		.section	.bss.DelayTickCount,"aw",%nobits
-  76              		.align	2
-  79              	DelayTickCount:
-  80 0000 00000000 		.space	4
-  81              		.global	adc
-  82              		.section	.bss.adc,"aw",%nobits
-  83              		.align	2
-  86              	adc:
-  87 0000 00000000 		.space	4
-  88              		.global	res
-ARM GAS  C:\Users\rpong\AppData\Local\Temp\cc0YbdHO.s 			page 3
+ 105              		.loc 1 33 9 is_stmt 1 view .LVU22
+ 106 005a 4FF49670 		mov	r0, #300
+ 107 005e FFF7FEFF 		bl	mydelay
+ 108              	.LVL11:
+  26:Core/Src/main.c ****         
+ 109              		.loc 1 26 10 view .LVU23
+  29:Core/Src/main.c ****         while(!(ADC1->SR & ADC_SR_EOC)); // ожидание завершения преобраз�
+ 110              		.loc 1 29 9 is_stmt 0 view .LVU24
+ 111 0062 DAE7     		b	.L3
+ 112              	.L6:
+ 113 0064 AFF30080 		.align	3
+ 114              	.L5:
+ 115 0068 66666666 		.word	1717986918
+ 116 006c 66660A40 		.word	1074423398
+ 117 0070 00200140 		.word	1073815552
+ 118 0074 0000303F 		.word	1060110336
+ 119 0078 00000000 		.word	res
+ 120 007c 00000000 		.word	adc
+ 121              		.cfi_endproc
+ 122              	.LFE130:
+ 124              		.global	PWM_Load
+ 125              		.section	.data.PWM_Load,"aw"
+ 126              		.align	2
+ 129              	PWM_Load:
+ 130 0000 87130000 		.word	4999
+ 131              		.global	SYSTICK_counter
+ 132              		.section	.bss.SYSTICK_counter,"aw",%nobits
+ 133              		.align	2
+ 136              	SYSTICK_counter:
+ 137 0000 00000000 		.space	4
+ 138              		.global	TIM2_counter
+ 139              		.section	.bss.TIM2_counter,"aw",%nobits
+ 140              		.align	2
+ 143              	TIM2_counter:
+ 144 0000 00000000 		.space	4
+ARM GAS  C:\Users\rpong\AppData\Local\Temp\cck30cnN.s 			page 4
 
 
-  89              		.section	.bss.res,"aw",%nobits
-  90              		.align	2
-  93              	res:
-  94 0000 00000000 		.space	4
-  95              		.global	Led2flag
-  96              		.section	.bss.Led2flag,"aw",%nobits
-  99              	Led2flag:
- 100 0000 00       		.space	1
- 101              		.global	Led1flag
- 102              		.section	.bss.Led1flag,"aw",%nobits
- 105              	Led1flag:
- 106 0000 00       		.space	1
- 107              		.text
- 108              	.Letext0:
- 109              		.file 2 "D:/DMPT/xpack-arm-none-eabi-gcc-13.2.1-1.1/arm-none-eabi/include/machine/_default_types.h
- 110              		.file 3 "D:/DMPT/xpack-arm-none-eabi-gcc-13.2.1-1.1/arm-none-eabi/include/sys/_stdint.h"
- 111              		.file 4 "Core/Src/../Inc/init.h"
-ARM GAS  C:\Users\rpong\AppData\Local\Temp\cc0YbdHO.s 			page 4
+ 145              		.global	DelayTickCount
+ 146              		.section	.bss.DelayTickCount,"aw",%nobits
+ 147              		.align	2
+ 150              	DelayTickCount:
+ 151 0000 00000000 		.space	4
+ 152              		.global	adc
+ 153              		.section	.bss.adc,"aw",%nobits
+ 154              		.align	2
+ 157              	adc:
+ 158 0000 00000000 		.space	4
+ 159              		.global	res
+ 160              		.section	.bss.res,"aw",%nobits
+ 161              		.align	2
+ 164              	res:
+ 165 0000 00000000 		.space	4
+ 166              		.global	Led2flag
+ 167              		.section	.bss.Led2flag,"aw",%nobits
+ 170              	Led2flag:
+ 171 0000 00       		.space	1
+ 172              		.global	Led1flag
+ 173              		.section	.bss.Led1flag,"aw",%nobits
+ 176              	Led1flag:
+ 177 0000 00       		.space	1
+ 178              		.text
+ 179              	.Letext0:
+ 180              		.file 2 "D:/DMPT/xpack-arm-none-eabi-gcc-13.2.1-1.1/arm-none-eabi/include/machine/_default_types.h
+ 181              		.file 3 "D:/DMPT/xpack-arm-none-eabi-gcc-13.2.1-1.1/arm-none-eabi/include/sys/_stdint.h"
+ 182              		.file 4 "Core/Src/../Inc/../../CMSIS/Devices/Inc/stm32f429xx.h"
+ 183              		.file 5 "Core/Src/../Inc/init.h"
+ 184              		.file 6 "Core/Src/../Inc/it_handlers.h"
+ARM GAS  C:\Users\rpong\AppData\Local\Temp\cck30cnN.s 			page 5
 
 
 DEFINED SYMBOLS
                             *ABS*:00000000 main.c
-C:\Users\rpong\AppData\Local\Temp\cc0YbdHO.s:19     .text.main:00000000 $t
-C:\Users\rpong\AppData\Local\Temp\cc0YbdHO.s:25     .text.main:00000000 main
-C:\Users\rpong\AppData\Local\Temp\cc0YbdHO.s:65     .bss.SYSTICK_counter:00000000 SYSTICK_counter
-C:\Users\rpong\AppData\Local\Temp\cc0YbdHO.s:62     .bss.SYSTICK_counter:00000000 $d
-C:\Users\rpong\AppData\Local\Temp\cc0YbdHO.s:72     .bss.TIM2_counter:00000000 TIM2_counter
-C:\Users\rpong\AppData\Local\Temp\cc0YbdHO.s:69     .bss.TIM2_counter:00000000 $d
-C:\Users\rpong\AppData\Local\Temp\cc0YbdHO.s:79     .bss.DelayTickCount:00000000 DelayTickCount
-C:\Users\rpong\AppData\Local\Temp\cc0YbdHO.s:76     .bss.DelayTickCount:00000000 $d
-C:\Users\rpong\AppData\Local\Temp\cc0YbdHO.s:86     .bss.adc:00000000 adc
-C:\Users\rpong\AppData\Local\Temp\cc0YbdHO.s:83     .bss.adc:00000000 $d
-C:\Users\rpong\AppData\Local\Temp\cc0YbdHO.s:93     .bss.res:00000000 res
-C:\Users\rpong\AppData\Local\Temp\cc0YbdHO.s:90     .bss.res:00000000 $d
-C:\Users\rpong\AppData\Local\Temp\cc0YbdHO.s:99     .bss.Led2flag:00000000 Led2flag
-C:\Users\rpong\AppData\Local\Temp\cc0YbdHO.s:100    .bss.Led2flag:00000000 $d
-C:\Users\rpong\AppData\Local\Temp\cc0YbdHO.s:105    .bss.Led1flag:00000000 Led1flag
-C:\Users\rpong\AppData\Local\Temp\cc0YbdHO.s:106    .bss.Led1flag:00000000 $d
+C:\Users\rpong\AppData\Local\Temp\cck30cnN.s:23     .text.main:00000000 $t
+C:\Users\rpong\AppData\Local\Temp\cck30cnN.s:29     .text.main:00000000 main
+C:\Users\rpong\AppData\Local\Temp\cck30cnN.s:115    .text.main:00000068 $d
+C:\Users\rpong\AppData\Local\Temp\cck30cnN.s:164    .bss.res:00000000 res
+C:\Users\rpong\AppData\Local\Temp\cck30cnN.s:157    .bss.adc:00000000 adc
+C:\Users\rpong\AppData\Local\Temp\cck30cnN.s:129    .data.PWM_Load:00000000 PWM_Load
+C:\Users\rpong\AppData\Local\Temp\cck30cnN.s:126    .data.PWM_Load:00000000 $d
+C:\Users\rpong\AppData\Local\Temp\cck30cnN.s:136    .bss.SYSTICK_counter:00000000 SYSTICK_counter
+C:\Users\rpong\AppData\Local\Temp\cck30cnN.s:133    .bss.SYSTICK_counter:00000000 $d
+C:\Users\rpong\AppData\Local\Temp\cck30cnN.s:143    .bss.TIM2_counter:00000000 TIM2_counter
+C:\Users\rpong\AppData\Local\Temp\cck30cnN.s:140    .bss.TIM2_counter:00000000 $d
+C:\Users\rpong\AppData\Local\Temp\cck30cnN.s:150    .bss.DelayTickCount:00000000 DelayTickCount
+C:\Users\rpong\AppData\Local\Temp\cck30cnN.s:147    .bss.DelayTickCount:00000000 $d
+C:\Users\rpong\AppData\Local\Temp\cck30cnN.s:154    .bss.adc:00000000 $d
+C:\Users\rpong\AppData\Local\Temp\cck30cnN.s:161    .bss.res:00000000 $d
+C:\Users\rpong\AppData\Local\Temp\cck30cnN.s:170    .bss.Led2flag:00000000 Led2flag
+C:\Users\rpong\AppData\Local\Temp\cck30cnN.s:171    .bss.Led2flag:00000000 $d
+C:\Users\rpong\AppData\Local\Temp\cck30cnN.s:176    .bss.Led1flag:00000000 Led1flag
+C:\Users\rpong\AppData\Local\Temp\cck30cnN.s:177    .bss.Led1flag:00000000 $d
 
 UNDEFINED SYMBOLS
+__aeabi_ui2f
+__aeabi_f2d
+__aeabi_dmul
+__aeabi_d2f
 GPIO_Init_CMSIS
 RCC_Init
 ITR_Init
 SysTick_Init
 TIM_Init
+ADC_Init
+mydelay

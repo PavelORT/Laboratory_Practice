@@ -9,10 +9,10 @@ void SysTick_Handler(void)
     SYSTICK_counter++;
 } 
 
-/*void ADC_IRQHandler(void)
+void ADC_IRQHandler(void)
 {
     CLEAR_BIT(ADC1->SR,ADC_SR_EOC);//сброс флага прерывания
-}*/
+}
 
 extern uint8_t Led1flag;
 extern uint8_t Led2flag;
