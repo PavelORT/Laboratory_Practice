@@ -1,7 +1,7 @@
 #include "../Inc/init.h"
 #include "../Inc/it_handlers.h"
 
-void GPIO_Init_CMSIS(void)
+void GPIO_Init(void)
 {
     SET_BIT(RCC->AHB1ENR, RCC_AHB1ENR_GPIOAEN | RCC_AHB1ENR_GPIOBEN | RCC_AHB1ENR_GPIOCEN); //Включение тактирования портов GPIOB и GPIOC
     //set LED (PB7)
@@ -22,7 +22,7 @@ void GPIO_Init_CMSIS(void)
     CLEAR_BIT(GPIOA->OTYPER, GPIO_OTYPER_OT15);//push-pull
     SET_BIT(GPIOA->OSPEEDR, GPIO_OSPEEDER_OSPEEDR15_0 | GPIO_OSPEEDER_OSPEEDR15_1);//ставим скорость на максимум
     CLEAR_BIT(GPIOA->PUPDR, GPIO_PUPDR_PUPDR15_0);//Отключение PU/PD
-    MODIFY_REG(GPIOA->AFR[1], GPIO_AFRH_AFSEL15, 0x1); //выбор альтернативной функции
+    MODIFY_REG(GPIOA->AFR[1], GPIO_AFRH_AFSEL15, 1); //выбор альтернативной функции
     
     //Настройка пина PB1 на аналоговый вход для АЦП (ADC12_IN9)
 
@@ -131,14 +131,27 @@ void TIM_Init()
     SET_BIT(TIM2->DIER,TIM_DIER_UIE);//включение прерываний
     MODIFY_REG(TIM2->PSC,TIM_PSC_PSC,4499);//настройка предделителя тактирование от APB1 45МГц
     MODIFY_REG(TIM2->ARR,TIM_ARR_ARR,9999);//настрока значения перезагрузки
-    //прерывание через 0.5 с
+    //MODIFY_REG(TIM2->PSC,TIM_PSC_PSC,0);//настройка предделителя тактирование от APB1 45МГц
+    //MODIFY_REG(TIM2->ARR,TIM_ARR_ARR,65535);//настрока значения перезагрузки
     
-    SET_BIT(TIM2->CCER,TIM_CCER_CC1E);//включение выхода
+    
+    CLEAR_BIT(TIM2->CR1, TIM_CR1_ARPE);//выключаем автоперезагрузку
+    CLEAR_BIT(TIM2->SMCR, TIM_SMCR_ECE);//тактирование таймера от внутреннего источника
+    SET_BIT(TIM2->CCMR1, TIM_CCMR1_OC1PE);//включение предварительной загрузки на CH1
+    CLEAR_BIT(TIM2->CCER, TIM_CCER_CC1E);//Отключаем канал CH1 для дальнейшей настройки 
+    CLEAR_BIT(TIM2->CCMR1, TIM_CCMR1_CC1S);//настройка направления канала на выход
     SET_BIT(TIM2->CCMR1,TIM_CCMR1_OC1M_1 | TIM_CCMR1_OC1M_2);//Настройка на режим ШИМа
+    CLEAR_BIT(TIM2->CCER, TIM_CCER_CC1P);//настройка полярности выхода (0 это 0 или 5 В)
+    
+    CLEAR_BIT(TIM2->CCMR1, TIM_CCMR1_OC1FE);//Отключение быстрого сравнения выходов
+    CLEAR_BIT(TIM2->CR2, TIM_CR2_MMS);//Отключение мастер-режима таймера
+
+    SET_BIT(TIM2->CCER,TIM_CCER_CC1E);//включение выхода
+
     MODIFY_REG(TIM2->CCR1,TIM_CCR1_CCR1, 4999);//настройка значения переключения ШИМ от 0 до 10000
-    /*NVIC_EnableIRQ(TIM2_IRQn);//разрешаем прерывания в регистре контроллера прерываний NVIC
+    NVIC_EnableIRQ(TIM2_IRQn);//разрешаем прерывания в регистре контроллера прерываний NVIC
     NVIC_SetPriority(TIM2_IRQn, NVIC_EncodePriority(NVIC_GetPriorityGrouping(), 3, 0)); //Установка приоритета прерывания
-    */
+    
     SET_BIT(TIM2->EGR,TIM_EGR_UG);//Перезагружаем счётчик TIM2
     SET_BIT(TIM2->CR1,TIM_CR1_CEN);//включение TIM2
     
@@ -166,6 +179,6 @@ void ADC_Init(void)
     //CLEAR_BIT(ADC1->CR2, ADC_CR2_EXTSEL); // выбор TIM1 CC1 event как источника запуска преобразований
     //SET_BIT(ADC1->CR2, ADC_CR2_EXTEN_0); //Включение внешнего триггера для обычных каналов по фронту 1-подъём, 2-спуск, 3-подъём/спуск
     SET_BIT(ADC1->CR2, ADC_CR2_ADON);// Включение АЦП1
-    // SET_BIT(ADC1->CR2, ADC_CR2_SWSTART); // запуск преобразования
+    SET_BIT(ADC1->CR2, ADC_CR2_SWSTART); // запуск преобразования
     //ADC_DR - место хранения данных
 }

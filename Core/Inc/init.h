@@ -4,7 +4,7 @@
 #define SYSTLOAD 179999
 
 void RCC_Init(void);
-void GPIO_Init_CMSIS(void);
+void GPIO_Init(void);
 void ITR_Init(void); 
 void SysTick_Init(void); 
 void TIM_Init();
