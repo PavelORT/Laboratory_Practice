@@ -3,19 +3,25 @@
 
 void GPIO_Init_CMSIS(void)
 {
-    SET_BIT(RCC->AHB1ENR, RCC_AHB1ENR_GPIOBEN | RCC_AHB1ENR_GPIOCEN); //Включение тактирования портов GPIOB и GPIOC
-    //set LED (pin7)
+    SET_BIT(RCC->AHB1ENR, RCC_AHB1ENR_GPIOAEN | RCC_AHB1ENR_GPIOBEN | RCC_AHB1ENR_GPIOCEN); //Включение тактирования портов GPIOB и GPIOC
+    //set LED (PB7)
     SET_BIT(GPIOB->MODER, GPIO_MODER_MODE7_0); //Настройка работы 7-го пина GPIOB в режиме вывода сигнала (Output mode)
     CLEAR_BIT(GPIOB->OTYPER, GPIO_OTYPER_OT7);//Настройка на Push-Pull работу 7-го пина GPIOB (Output Push-Pull)
     SET_BIT(GPIOB->OSPEEDR, GPIO_OSPEEDER_OSPEEDR7_0);//Настройка скорости работы 7-го пина GPIOB на среднюю
     CLEAR_BIT(GPIOB->PUPDR, GPIO_PUPDR_PUPDR7_0);//Отключение PU/PD резисторов для 7-го пина GPIOB
     SET_BIT(GPIOB->BSRR, GPIO_BSRR_BR7);//сброс BSRR, выключение светодиода 7-го пина GPIOB
-    //set LED (pin14)
+    //set LED (PB14)
     SET_BIT(GPIOB->MODER, GPIO_MODER_MODE14_0); 
     CLEAR_BIT(GPIOB->OTYPER, GPIO_OTYPER_OT14);
     SET_BIT(GPIOB->OSPEEDR, GPIO_OSPEEDER_OSPEEDR14_0);
     CLEAR_BIT(GPIOB->PUPDR, GPIO_PUPDR_PUPDR14_0);
     SET_BIT(GPIOB->BSRR, GPIO_BSRR_BR14);
+
+    //set (PA15) //выход ШИМ TIM2_CH1
+    SET_BIT(GPIOA->MODER, GPIO_MODER_MODE15_0);//альтернативная функция
+    CLEAR_BIT(GPIOA->OTYPER, GPIO_OTYPER_OT15);//push-pull
+    SET_BIT(GPIOA->OSPEEDR, GPIO_OSPEEDER_OSPEEDR15_0 | GPIO_OSPEEDER_OSPEEDR15_1);//ставим скорость на максимум
+    CLEAR_BIT(GPIOA->PUPDR, GPIO_PUPDR_PUPDR15_0);//Отключение PU/PD
     
     //Настройка пина PB1 на аналоговый вход для АЦП (ADC12_IN9)
 
