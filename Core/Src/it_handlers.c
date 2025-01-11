@@ -1,14 +1,5 @@
 #include "it_handlers.h" 
 
-extern uint32_t SYSTICK_counter;
-extern uint32_t DelayTickCount;
-
-void SysTick_Handler(void) 
-{  
-    DelayTickCount++;
-    SYSTICK_counter++;
-} 
-
 void ADC_IRQHandler(void)
 {
     CLEAR_BIT(ADC1->SR,ADC_SR_EOC);//сброс флага прерывания
@@ -17,37 +8,16 @@ void ADC_IRQHandler(void)
 extern uint8_t Led1flag;
 extern uint8_t Led2flag;
 
-void TIM1_UP_TIM10_IRQHandler(void)
-{
-    CLEAR_BIT(TIM1->SR,TIM_SR_UIF);
-    if (Led1flag == 0)
-    {
-        SET_BIT(GPIOB->BSRR, GPIO_BSRR_BS7);//включение светодиода 7-го пина GPIOB
-        Led1flag = 1;
-    }
-    else{
-        SET_BIT(GPIOB->BSRR, GPIO_BSRR_BR7);//выключение светодиода 7-го пина GPIOB
-        Led1flag = 0;
-    }
-    //сброс флага прерывания таймера UIF
-}
 
-extern uint32_t TIM2_counter;
+extern uint32_t TIM3_counter;
+extern uint32_t PWM_Load;
 
-void TIM2_IRQHandler(void)
+void TIM3_IRQHandler(void)
 {
     //сброс флага прерывания таймера UIF
-    CLEAR_BIT(TIM2->SR,TIM_SR_UIF);
-    /*if (Led2flag == 0)
-    {
-        SET_BIT(GPIOB->BSRR, GPIO_BSRR_BS14);//включение светодиода 14-го пина GPIOB
-        Led2flag = 1;
-    }
-    else{
-        SET_BIT(GPIOB->BSRR, GPIO_BSRR_BR14);//выключение светодиода 14-го пина GPIOB
-        Led2flag = 0;
-    }
-    TIM2_counter++;*/
+    CLEAR_BIT(TIM3->SR,TIM_SR_UIF);
+    //MODIFY_REG(TIM3->CCR1,TIM_CCR1_CCR1, PWM_Load);//настройка значения переключения ШИМ
+    
     
 }
 
