@@ -17,22 +17,7 @@ void GPIO_Init(void)
     SET_BIT(GPIOA->OSPEEDR, GPIO_OSPEEDER_OSPEEDR6_0 | GPIO_OSPEEDER_OSPEEDR6_1);//ставим скорость на максимум
     CLEAR_BIT(GPIOA->PUPDR, GPIO_PUPDR_PUPDR6_0);//Отключение PU/PD
     MODIFY_REG(GPIOA->AFR[0], GPIO_AFRL_AFSEL6, GPIO_AFRL_AFSEL6_1); //выбор альтернативной функции
-
-    //set (PA7) //выход ШИМ TIM1_CH1N
-    SET_BIT(GPIOA->MODER, GPIO_MODER_MODE7_0 | GPIO_MODER_MODE7_1);//альтернативная функция
-    CLEAR_BIT(GPIOA->OTYPER, GPIO_OTYPER_OT7);//push-pull
-    SET_BIT(GPIOA->OSPEEDR, GPIO_OSPEEDER_OSPEEDR7_0 | GPIO_OSPEEDER_OSPEEDR7_1);//ставим скорость на максимум
-    CLEAR_BIT(GPIOA->PUPDR, GPIO_PUPDR_PUPDR7_0);//Отключение PU/PD
-    MODIFY_REG(GPIOA->AFR[0], GPIO_AFRL_AFSEL7, GPIO_AFRL_AFSEL7_0); //выбор альтернативной функции
-
-    //set (PA15) //выход ШИМ TIM2_CH1
-    SET_BIT(GPIOA->MODER, GPIO_MODER_MODE15_0 | GPIO_MODER_MODE15_1);//альтернативная функция
-    CLEAR_BIT(GPIOA->OTYPER, GPIO_OTYPER_OT15);//push-pull
-    SET_BIT(GPIOA->OSPEEDR, GPIO_OSPEEDER_OSPEEDR15_0 | GPIO_OSPEEDER_OSPEEDR15_1);//ставим скорость на максимум
-    CLEAR_BIT(GPIOA->PUPDR, GPIO_PUPDR_PUPDR15_0);//Отключение PU/PD
-    MODIFY_REG(GPIOA->AFR[1], GPIO_AFRH_AFSEL15, GPIO_AFRH_AFSEL15_0); //выбор альтернативной функции
-    
-
+  
     //Настройка пина PB1 на аналоговый вход для АЦП (ADC12_IN9)
     SET_BIT(GPIOB->MODER, GPIO_MODER_MODE1_Msk);
     CLEAR_BIT(GPIOB->OTYPER, GPIO_OTYPER_OT1);//Настройка на Push-Pull 
@@ -77,26 +62,6 @@ void RCC_Init(void){
     MODIFY_REG(FLASH->ACR, FLASH_ACR_LATENCY, FLASH_ACR_LATENCY_5WS); 
 }
 
-void ITR_Init(void){ 
-    SET_BIT(RCC->APB2ENR, RCC_APB2ENR_SYSCFGEN); //Включение тактирования периферии SYSCFG
-    NVIC_SetPriorityGrouping(0);//установка типа группировки без подприоритетов
-
-    /*MODIFY_REG(SYSCFG->EXTICR[3], SYSCFG_EXTICR4_EXTI13_Msk, SYSCFG_EXTICR4_EXTI13_PC); //Настройка мультиплексора на вывод линии прерывания EXTI13 на PC13 
-    SET_BIT(EXTI->IMR, EXTI_IMR_MR13); //Настройка маскирования 13 линии 
-    SET_BIT(EXTI->RTSR, EXTI_RTSR_TR13); //Настройка детектирования нарастающего фронта 13 линии 
-    SET_BIT(EXTI->FTSR, EXTI_FTSR_TR13); //Настройка детектирования спадающего фронта 13 линии 
-    NVIC_SetPriority(EXTI15_10_IRQn, NVIC_EncodePriority(NVIC_GetPriorityGrouping(), 7, 0)); //Установка 7 приоритета прерывания для вектора EXTI15_10 
-    NVIC_EnableIRQ(EXTI15_10_IRQn); //Включение прерывания по вектору EXTI15_10 
-    
-    MODIFY_REG(SYSCFG->EXTICR[1], SYSCFG_EXTICR2_EXTI6_Msk, SYSCFG_EXTICR2_EXTI6_PC); //Настройка мультиплексора на вывод линии прерывания EXTI13 на PC6 
-    SET_BIT(EXTI->IMR, EXTI_IMR_MR6); //Настройка маскирования 6 линии 
-    SET_BIT(EXTI->RTSR, EXTI_RTSR_TR6); //Настройка детектирования нарастающего фронта 6 линии 
-    SET_BIT(EXTI->FTSR, EXTI_FTSR_TR6); //Настройка детектирования спадающего фронта 6 линии 
-    NVIC_SetPriority(EXTI9_5_IRQn , NVIC_EncodePriority(NVIC_GetPriorityGrouping(), 7, 0)); //Установка 7 приоритета прерывания для вектора EXTI9_5 
-    NVIC_EnableIRQ(EXTI9_5_IRQn); //Включение прерывания по вектору EXTI9_5
-    */
-} 
-
 void SysTick_Init(void){ 
     CLEAR_BIT(SysTick->CTRL, SysTick_CTRL_ENABLE_Msk); //предварительно выключим счётчик 
     SET_BIT(SysTick->CTRL, SysTick_CTRL_TICKINT_Msk); //Разрешаем прерывание по системному таймеру 
@@ -109,54 +74,22 @@ void SysTick_Init(void){
 void TIM_Init()
 {
     //Включение таймеров
-    //TIM1
-    SET_BIT(RCC->APB2ENR,RCC_APB2ENR_TIM1EN); //включение тактирования TIM1 16 бит 4 канала
-
-    MODIFY_REG(TIM1->PSC,TIM_PSC_PSC,179);//настройка предделителя тактирование
-    MODIFY_REG(TIM1->ARR,TIM_ARR_ARR,1000-1);//настрока значения перезагрузки
     
-	SET_BIT(TIM1->BDTR,TIM_BDTR_MOE);//разрешим использовать выводы таймера как выходы для TIM1
-
-    MODIFY_REG(TIM1->CCR1,TIM_CCR1_CCR1, 800);//настройка значения переключения ШИМ от 0 до 1000
-    SET_BIT(TIM1->CCER,TIM_CCER_CC1E);//включение выхода
-    SET_BIT(TIM1->CCMR1,TIM_CCMR1_OC1M_1 | TIM_CCMR1_OC1M_2);//Настройка на режим ШИМа
-    //SET_BIT(TIM1->EGR,TIM_EGR_UG);//Перезагружаем счётчик
-    SET_BIT(TIM1->CR1,TIM_CR1_CEN);//включение TIM2
-
-
-    /*
-    CLEAR_BIT(TIM1->SMCR,TIM_SMCR_SMS);//выключаем slave mode, чтобы тактировался напрямую от APB
-    CLEAR_REG(TIM1->CR1); //Сброс битов
-    CLEAR_REG(TIM1->CR2); //Сброс битов
-    SET_BIT(TIM1->CR1,TIM_CR1_DIR);//down направление счёта 0-up 1-dowm
-    CLEAR_BIT(TIM1->CR1,TIM_CR1_CMS);//center-aligned mode выключен
-    SET_BIT(TIM1->DIER,TIM_DIER_UIE);//включение прерываний
-    MODIFY_REG(TIM1->PSC,TIM_PSC_PSC,8999);//настройка предделителя от APB2 90МГц
-    MODIFY_REG(TIM1->ARR,TIM_ARR_ARR,9999);//настрока значения перезагрузки
-    //прерывание через 0.5 с
-
-    NVIC_EnableIRQ(TIM1_UP_TIM10_IRQn);//разрешаем прерывания в регистре контроллера прерываний NVIC
-    NVIC_SetPriority(TIM1_UP_TIM10_IRQn, NVIC_EncodePriority(NVIC_GetPriorityGrouping(), 3, 0)); //Установка приоритета прерывания
-    SET_BIT(TIM1->CR1,TIM_CR1_CEN);//включение TIM1
-    SET_BIT(TIM1->EGR,TIM_EGR_UG);//Перезагружаем счётчик TIM1
-    */
+    //TIM3
+    SET_BIT(RCC->APB1ENR,RCC_APB1ENR_TIM3EN); //включение тактирования TIM3 
+    MODIFY_REG(TIM3->PSC,TIM_PSC_PSC,899);//настройка предделителя тактирование от APB1 2*45МГц
+    MODIFY_REG(TIM3->ARR,TIM_ARR_ARR,1000-1);//настрока значения перезагрузки
     
-    //TIM2
-    SET_BIT(RCC->APB1ENR,RCC_APB1ENR_TIM2EN); //включение тактирования TIM2 32 бита 4 канала
-    MODIFY_REG(TIM2->PSC,TIM_PSC_PSC,899);//настройка предделителя тактирование от APB1 45МГц
-    MODIFY_REG(TIM2->ARR,TIM_ARR_ARR,1000-1);//настрока значения перезагрузки
-    
-    SET_BIT(TIM2->CCMR1, TIM_CCMR1_OC1PE);//включение предварительной загрузки на CH1
-    MODIFY_REG(TIM2->CCR1,TIM_CCR1_CCR1, 800);//настройка значения переключения ШИМ от 0 до 1000
-    SET_BIT(TIM2->CCER,TIM_CCER_CC1E);//включение выхода
-    SET_BIT(TIM2->CCMR1,TIM_CCMR1_OC1M_1 | TIM_CCMR1_OC1M_2);//Настройка на режим ШИМа
-    SET_BIT(TIM2->DIER,TIM_DIER_UIE);//включение прерываний
-    NVIC_EnableIRQ(TIM2_IRQn);//разрешаем прерывания в регистре контроллера прерываний NVIC
-    NVIC_SetPriority(TIM2_IRQn, NVIC_EncodePriority(NVIC_GetPriorityGrouping(), 3, 0)); //Установка приоритета прерывания
+    SET_BIT(TIM3->CCMR1, TIM_CCMR1_OC1PE);//включение предварительной загрузки на CH1
+    MODIFY_REG(TIM3->CCR1,TIM_CCR1_CCR1, 800);//настройка значения переключения ШИМ от 0 до 1000
+    SET_BIT(TIM3->CCER,TIM_CCER_CC1E);//включение выхода
+    SET_BIT(TIM3->CCMR1,TIM_CCMR1_OC1M_1 | TIM_CCMR1_OC1M_2);//Настройка на режим ШИМа
+    SET_BIT(TIM3->DIER,TIM_DIER_UIE);//включение прерываний
+    NVIC_EnableIRQ(TIM3_IRQn);//разрешаем прерывания в регистре контроллера прерываний NVIC
+    NVIC_SetPriority(TIM3_IRQn, NVIC_EncodePriority(NVIC_GetPriorityGrouping(), 3, 0)); //Установка приоритета прерывания
 
     //SET_BIT(TIM2->EGR,TIM_EGR_UG);//Перезагружаем счётчик TIM2
-    SET_BIT(TIM2->CR1,TIM_CR1_CEN);//включение TIM2
-    
+    SET_BIT(TIM3->CR1,TIM_CR1_CEN);//включение TIM2
     
     /*
     CLEAR_BIT(TIM2->SMCR,TIM_SMCR_SMS);//выключаем slave mode, чтобы тактировался напрямую от APB
@@ -191,23 +124,6 @@ void TIM_Init()
     SET_BIT(TIM2->EGR,TIM_EGR_UG);//Перезагружаем счётчик TIM2
     SET_BIT(TIM2->CR1,TIM_CR1_CEN);//включение TIM2
     */
-
-    //TIM3
-    SET_BIT(RCC->APB1ENR,RCC_APB1ENR_TIM3EN); //включение тактирования TIM3 
-    MODIFY_REG(TIM3->PSC,TIM_PSC_PSC,899);//настройка предделителя тактирование от APB1 45МГц
-    MODIFY_REG(TIM3->ARR,TIM_ARR_ARR,1000-1);//настрока значения перезагрузки
-    
-    SET_BIT(TIM3->CCMR1, TIM_CCMR1_OC1PE);//включение предварительной загрузки на CH1
-    MODIFY_REG(TIM3->CCR1,TIM_CCR1_CCR1, 800);//настройка значения переключения ШИМ от 0 до 1000
-    SET_BIT(TIM3->CCER,TIM_CCER_CC1E);//включение выхода
-    SET_BIT(TIM3->CCMR1,TIM_CCMR1_OC1M_1 | TIM_CCMR1_OC1M_2);//Настройка на режим ШИМа
-    SET_BIT(TIM3->DIER,TIM_DIER_UIE);//включение прерываний
-    NVIC_EnableIRQ(TIM3_IRQn);//разрешаем прерывания в регистре контроллера прерываний NVIC
-    NVIC_SetPriority(TIM3_IRQn, NVIC_EncodePriority(NVIC_GetPriorityGrouping(), 3, 0)); //Установка приоритета прерывания
-
-    //SET_BIT(TIM2->EGR,TIM_EGR_UG);//Перезагружаем счётчик TIM2
-    SET_BIT(TIM3->CR1,TIM_CR1_CEN);//включение TIM2
-    
     
 }
 

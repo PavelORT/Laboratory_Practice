@@ -2,9 +2,8 @@
 #include "../Inc/it_handlers.h"
 
 
-
+uint16_t DelayTickCount = 0;
 uint8_t Led1flag = 0;
-uint8_t Led2flag = 0;
 
 float res; // переменная для результата
 int adc;
@@ -20,7 +19,7 @@ int main(void)
 { 
     GPIO_Init();
     RCC_Init(); // Инициализация тактирования системы 
-    ITR_Init();// Инициализация прерываний  
+    SysTick_Init();
     TIM_Init();
     ADC_Init();
 

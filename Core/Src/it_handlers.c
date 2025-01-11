@@ -5,9 +5,14 @@ void ADC_IRQHandler(void)
     CLEAR_BIT(ADC1->SR,ADC_SR_EOC);//сброс флага прерывания
 }
 
-extern uint8_t Led1flag;
-extern uint8_t Led2flag;
+extern uint16_t DelayTickCount;
 
+void SysTick_Handler(void) 
+{  
+    DelayTickCount++;
+} 
+
+extern uint8_t Led1flag;
 
 extern uint32_t TIM3_counter;
 extern uint32_t PWM_Load;
