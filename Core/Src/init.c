@@ -3,7 +3,7 @@
 
 void GPIO_Init(void)
 {
-    SET_BIT(RCC->AHB1ENR, RCC_AHB1ENR_GPIOAEN | RCC_AHB1ENR_GPIOBEN); //Включение тактирования портов GPIOB и GPIOC
+    SET_BIT(RCC->AHB1ENR, RCC_AHB1ENR_GPIOAEN | RCC_AHB1ENR_GPIOBEN | RCC_AHB1ENR_GPIOCEN); //Включение тактирования портов GPIOB и GPIOC
     //set LED (PB14)
     SET_BIT(GPIOB->MODER, GPIO_MODER_MODE14_0); 
     CLEAR_BIT(GPIOB->OTYPER, GPIO_OTYPER_OT14);
@@ -12,11 +12,13 @@ void GPIO_Init(void)
     SET_BIT(GPIOB->BSRR, GPIO_BSRR_BR14);
 
     //set (PA6) //выход ШИМ TIM3_CH1
-    SET_BIT(GPIOA->MODER, GPIO_MODER_MODE6_0 | GPIO_MODER_MODE6_1);//альтернативная функция
+    SET_BIT(GPIOA->MODER, GPIO_MODER_MODE6_1);//альтернативная функция
     CLEAR_BIT(GPIOA->OTYPER, GPIO_OTYPER_OT6);//push-pull
     SET_BIT(GPIOA->OSPEEDR, GPIO_OSPEEDER_OSPEEDR6_0 | GPIO_OSPEEDER_OSPEEDR6_1);//ставим скорость на максимум
     CLEAR_BIT(GPIOA->PUPDR, GPIO_PUPDR_PUPDR6_0);//Отключение PU/PD
-    MODIFY_REG(GPIOA->AFR[0], GPIO_AFRL_AFSEL6, GPIO_AFRL_AFSEL6_1); //выбор альтернативной функции
+    MODIFY_REG(GPIOA->AFR[0], GPIO_AFRL_AFSEL6_Msk, GPIO_AFRL_AFSEL6_1); //выбор альтернативной функции
+    //SET_BIT(GPIOA->BSRR, GPIO_BSRR_BS6);
+    //
   
     //Настройка пина PB1 на аналоговый вход для АЦП (ADC12_IN9)
     SET_BIT(GPIOB->MODER, GPIO_MODER_MODE1_Msk);
@@ -24,6 +26,10 @@ void GPIO_Init(void)
     SET_BIT(GPIOB->OSPEEDR, GPIO_OSPEEDER_OSPEEDR1_0);//Настройка скорости работы 
     //SET_BIT(GPIOB->OSPEEDR, GPIO_OSPEEDER_OSPEEDR1_0 | GPIO_OSPEEDER_OSPEEDR11_1);//Настройка скорости работы 
     CLEAR_BIT(GPIOB->PUPDR, GPIO_PUPDR_PUPDR1_0);//Отключение PU/PD резисторов
+
+    // SET_BIT(GPIOC->MODER, GPIO_MODER_MODER9_1); 
+    // SET_BIT(GPIOC->OSPEEDR, GPIO_OSPEEDR_OSPEED9_Msk); //Настраиваем пин на максимальную скорость работы 
+    // MODIFY_REG(GPIOC->AFR[1], GPIO_AFRH_AFSEL9_Msk, 0x0); //Выбираем тип альтернативной функции – Выход MCO2
     
 }
 
@@ -58,6 +64,9 @@ void RCC_Init(void){
     MODIFY_REG(RCC->CFGR, RCC_CFGR_PPRE1, RCC_CFGR_PPRE1_DIV4); //Предделитель APВ1, делим на 4 
     MODIFY_REG(RCC->CFGR, RCC_CFGR_PPRE2, RCC_CFGR_PPRE2_DIV2); //Предделитель APВ2, делим на 2 
 
+    //MODIFY_REG(RCC->CFGR, RCC_CFGR_MCO2PRE, RCC_CFGR_MCO2PRE_Msk); //Предделитель на выходе MCO2 (PC9) = 5 
+    MODIFY_REG(RCC->CFGR, RCC_CFGR_MCO2PRE, RCC_CFGR_MCO2PRE_1 | RCC_CFGR_MCO2PRE_2); //Предделитель на выходе MCO2 (PC9) = 4 
+    CLEAR_BIT(RCC->CFGR, RCC_CFGR_MCO2); //Настраиваем на выход MCO2 - System clock
     //количество циклов задержки памяти на 6 циклов CPU
     MODIFY_REG(FLASH->ACR, FLASH_ACR_LATENCY, FLASH_ACR_LATENCY_5WS); 
 }
@@ -76,21 +85,44 @@ void TIM_Init()
     //Включение таймеров
     
     //TIM3
-    SET_BIT(RCC->APB1ENR,RCC_APB1ENR_TIM3EN); //включение тактирования TIM3 
-    MODIFY_REG(TIM3->PSC,TIM_PSC_PSC,899);//настройка предделителя тактирование от APB1 2*45МГц
-    MODIFY_REG(TIM3->ARR,TIM_ARR_ARR,1000-1);//настрока значения перезагрузки
+
+    SET_BIT(RCC->APB1ENR,RCC_APB1ENR_TIM3EN); //включение тактирования TIM3
+
+    // CLEAR_REG(TIM3->CR1); //Сброс битов
+    // CLEAR_REG(TIM3->CR2); //Сброс битов
+
+    //MODIFY_REG(TIM3->PSC,TIM_PSC_PSC,89);//настройка предделителя тактирование от APB1 2*45МГц
+    //MODIFY_REG(TIM3->ARR,TIM_ARR_ARR,10000-1);//настрока значения перезагрузки
     
+    TIM3->PSC = 90 - 1;
+    TIM3->ARR = 8190-1;
+    CLEAR_BIT(TIM3->CCMR1, TIM_CCMR1_CC1S);//настройка направления канала на выход
+    SET_BIT(TIM3->CCMR1, TIM_CCMR1_OC1M_1 | TIM_CCMR1_OC1M_2);
+
+    SET_BIT(TIM3->CCER,TIM_CCER_CC1E);
+
+    SET_BIT(TIM3->CR1,TIM_CR1_CEN);
+    /*
+    
+
+    CLEAR_BIT(TIM3->SMCR, TIM_SMCR_ECE);//тактирование таймера от внутреннего источника
+    CLEAR_BIT(TIM3->CCMR1, TIM_CCMR1_CC1S);//настройка направления канала на выход
+    SET_BIT(TIM3->CR1,TIM_CR1_ARPE);//включение предзагрузки ARR
     SET_BIT(TIM3->CCMR1, TIM_CCMR1_OC1PE);//включение предварительной загрузки на CH1
-    MODIFY_REG(TIM3->CCR1,TIM_CCR1_CCR1, 800);//настройка значения переключения ШИМ от 0 до 1000
+    MODIFY_REG(TIM3->CCR1,TIM_CCR1_CCR1, 5000);//настройка значения переключения ШИМ
+    CLEAR_BIT(TIM3->CCER,TIM_CCER_CC1P);//настройка полярности
     SET_BIT(TIM3->CCER,TIM_CCER_CC1E);//включение выхода
     SET_BIT(TIM3->CCMR1,TIM_CCMR1_OC1M_1 | TIM_CCMR1_OC1M_2);//Настройка на режим ШИМа
+    SET_BIT(TIM3->CR1,TIM_CR1_URS);//UG не генерирует прерывания
+    SET_BIT(TIM3->EGR, TIM_EGR_UG);//генерация события обновления
     SET_BIT(TIM3->DIER,TIM_DIER_UIE);//включение прерываний
+    //SET_BIT(TIM3->DIER,TIM_DIER_CC1IE);//включение прерываний
     NVIC_EnableIRQ(TIM3_IRQn);//разрешаем прерывания в регистре контроллера прерываний NVIC
-    NVIC_SetPriority(TIM3_IRQn, NVIC_EncodePriority(NVIC_GetPriorityGrouping(), 3, 0)); //Установка приоритета прерывания
+    NVIC_SetPriority(TIM3_IRQn, NVIC_EncodePriority(NVIC_GetPriorityGrouping(), 0, 0)); //Установка приоритета прерывания
 
     //SET_BIT(TIM2->EGR,TIM_EGR_UG);//Перезагружаем счётчик TIM2
     SET_BIT(TIM3->CR1,TIM_CR1_CEN);//включение TIM2
-    
+    */
     /*
     CLEAR_BIT(TIM2->SMCR,TIM_SMCR_SMS);//выключаем slave mode, чтобы тактировался напрямую от APB
     CLEAR_REG(TIM2->CR1); //Сброс битов
@@ -136,10 +168,10 @@ void ADC_Init(void)
     CLEAR_BIT(ADC1->CR2, ADC_CR2_ADON);// Выключение АЦП1
     CLEAR_BIT(ADC1->CR1, ADC_CR1_RES);// Установка разрешения АЦП1 на 12 бит
     SET_BIT(ADC1->CR2, ADC_CR2_CONT);// Включение непрерывных преобразований
-    //SET_BIT(ADC1->CR1,ADC_CR1_EOCIE); // Включение прерываний
+    SET_BIT(ADC1->CR1,ADC_CR1_EOCIE); // Включение прерываний
 
-    //NVIC_EnableIRQ(ADC_IRQn);//разрешение прерываний NVIC
-    //NVIC_SetPriority(ADC_IRQn, NVIC_EncodePriority(NVIC_GetPriorityGrouping(), 5, 0)); //Установка приоритета прерывания
+    NVIC_EnableIRQ(ADC_IRQn);//разрешение прерываний NVIC
+    NVIC_SetPriority(ADC_IRQn, NVIC_EncodePriority(NVIC_GetPriorityGrouping(), 5, 0)); //Установка приоритета прерывания
     CLEAR_BIT(ADC1->SQR1, ADC_SQR1_L); // число регулярных каналов 1
     SET_BIT(ADC1->SQR3, ADC_SQR3_SQ1_3 | ADC_SQR3_SQ1_0);// первое преобразование - канал 9
     

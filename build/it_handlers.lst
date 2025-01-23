@@ -1,4 +1,4 @@
-ARM GAS  C:\Users\rpong\AppData\Local\Temp\ccHN7TuX.s 			page 1
+ARM GAS  C:\Users\rpong\AppData\Local\Temp\cci2BcwX.s 			page 1
 
 
    1              		.cpu cortex-m4
@@ -28,179 +28,217 @@ ARM GAS  C:\Users\rpong\AppData\Local\Temp\ccHN7TuX.s 			page 1
   26              	.LFB130:
    1:Core/Src/it_handlers.c **** #include "it_handlers.h" 
    2:Core/Src/it_handlers.c **** 
-   3:Core/Src/it_handlers.c **** void ADC_IRQHandler(void)
-   4:Core/Src/it_handlers.c **** {
-  27              		.loc 1 4 1 view -0
+   3:Core/Src/it_handlers.c **** extern uint16_t adc;
+   4:Core/Src/it_handlers.c **** extern uint32_t TIM3_CNT;
+   5:Core/Src/it_handlers.c **** void ADC_IRQHandler(void)
+   6:Core/Src/it_handlers.c **** {
+  27              		.loc 1 6 1 view -0
   28              		.cfi_startproc
   29              		@ args = 0, pretend = 0, frame = 0
   30              		@ frame_needed = 0, uses_anonymous_args = 0
   31              		@ link register save eliminated.
-   5:Core/Src/it_handlers.c ****     CLEAR_BIT(ADC1->SR,ADC_SR_EOC);//сброс флага прерывания
-  32              		.loc 1 5 5 view .LVU1
-  33 0000 024A     		ldr	r2, .L2
-  34 0002 1368     		ldr	r3, [r2]
-  35 0004 23F00203 		bic	r3, r3, #2
-  36 0008 1360     		str	r3, [r2]
-   6:Core/Src/it_handlers.c **** }
-  37              		.loc 1 6 1 is_stmt 0 view .LVU2
-  38 000a 7047     		bx	lr
-  39              	.L3:
-  40              		.align	2
-  41              	.L2:
-  42 000c 00200140 		.word	1073815552
-  43              		.cfi_endproc
-  44              	.LFE130:
-  46              		.section	.text.SysTick_Handler,"ax",%progbits
-  47              		.align	1
-  48              		.global	SysTick_Handler
-  49              		.syntax unified
-  50              		.thumb
-  51              		.thumb_func
-  53              	SysTick_Handler:
-  54              	.LFB131:
-ARM GAS  C:\Users\rpong\AppData\Local\Temp\ccHN7TuX.s 			page 2
+   7:Core/Src/it_handlers.c ****     CLEAR_BIT(ADC1->SR,ADC_SR_EOC);//сброс флага прерывания
+  32              		.loc 1 7 5 view .LVU1
+  33 0000 044B     		ldr	r3, .L2
+  34 0002 1A68     		ldr	r2, [r3]
+  35 0004 22F00202 		bic	r2, r2, #2
+  36 0008 1A60     		str	r2, [r3]
+   8:Core/Src/it_handlers.c ****     adc = ADC1->DR;
+  37              		.loc 1 8 5 view .LVU2
+  38              		.loc 1 8 15 is_stmt 0 view .LVU3
+  39 000a DA6C     		ldr	r2, [r3, #76]
+  40              		.loc 1 8 9 view .LVU4
+  41 000c 024B     		ldr	r3, .L2+4
+  42 000e 1A80     		strh	r2, [r3]	@ movhi
+   9:Core/Src/it_handlers.c ****     //TIM3_CNT = READ_REG(TIM3->CNT);
+  10:Core/Src/it_handlers.c **** }
+  43              		.loc 1 10 1 view .LVU5
+  44 0010 7047     		bx	lr
+  45              	.L3:
+  46 0012 00BF     		.align	2
+  47              	.L2:
+  48 0014 00200140 		.word	1073815552
+ARM GAS  C:\Users\rpong\AppData\Local\Temp\cci2BcwX.s 			page 2
 
 
-   7:Core/Src/it_handlers.c **** 
-   8:Core/Src/it_handlers.c **** extern uint16_t DelayTickCount;
-   9:Core/Src/it_handlers.c **** 
-  10:Core/Src/it_handlers.c **** void SysTick_Handler(void) 
-  11:Core/Src/it_handlers.c **** {  
-  55              		.loc 1 11 1 is_stmt 1 view -0
-  56              		.cfi_startproc
-  57              		@ args = 0, pretend = 0, frame = 0
-  58              		@ frame_needed = 0, uses_anonymous_args = 0
-  59              		@ link register save eliminated.
-  12:Core/Src/it_handlers.c ****     DelayTickCount++;
-  60              		.loc 1 12 5 view .LVU4
-  61              		.loc 1 12 19 is_stmt 0 view .LVU5
-  62 0000 024A     		ldr	r2, .L5
-  63 0002 1388     		ldrh	r3, [r2]
-  64 0004 0133     		adds	r3, r3, #1
-  65 0006 1380     		strh	r3, [r2]	@ movhi
-  13:Core/Src/it_handlers.c **** } 
-  66              		.loc 1 13 1 view .LVU6
-  67 0008 7047     		bx	lr
-  68              	.L6:
-  69 000a 00BF     		.align	2
-  70              	.L5:
-  71 000c 00000000 		.word	DelayTickCount
-  72              		.cfi_endproc
-  73              	.LFE131:
-  75              		.section	.text.TIM3_IRQHandler,"ax",%progbits
-  76              		.align	1
-  77              		.global	TIM3_IRQHandler
-  78              		.syntax unified
-  79              		.thumb
-  80              		.thumb_func
-  82              	TIM3_IRQHandler:
-  83              	.LFB132:
-  14:Core/Src/it_handlers.c **** 
-  15:Core/Src/it_handlers.c **** extern uint8_t Led1flag;
-  16:Core/Src/it_handlers.c **** 
-  17:Core/Src/it_handlers.c **** extern uint32_t TIM3_counter;
-  18:Core/Src/it_handlers.c **** extern uint32_t PWM_Load;
-  19:Core/Src/it_handlers.c **** 
-  20:Core/Src/it_handlers.c **** void TIM3_IRQHandler(void)
-  21:Core/Src/it_handlers.c **** {
-  84              		.loc 1 21 1 is_stmt 1 view -0
-  85              		.cfi_startproc
-  86              		@ args = 0, pretend = 0, frame = 0
-  87              		@ frame_needed = 0, uses_anonymous_args = 0
-  88              		@ link register save eliminated.
-  22:Core/Src/it_handlers.c ****     //сброс флага прерывания таймера UIF
-  23:Core/Src/it_handlers.c ****     CLEAR_BIT(TIM3->SR,TIM_SR_UIF);
-  89              		.loc 1 23 5 view .LVU8
-  90 0000 024A     		ldr	r2, .L8
-  91 0002 1369     		ldr	r3, [r2, #16]
-  92 0004 23F00103 		bic	r3, r3, #1
-  93 0008 1361     		str	r3, [r2, #16]
-  24:Core/Src/it_handlers.c ****     //MODIFY_REG(TIM3->CCR1,TIM_CCR1_CCR1, PWM_Load);//настройка значения пере
-  25:Core/Src/it_handlers.c ****     
-  26:Core/Src/it_handlers.c ****     
-ARM GAS  C:\Users\rpong\AppData\Local\Temp\ccHN7TuX.s 			page 3
+  49 0018 00000000 		.word	adc
+  50              		.cfi_endproc
+  51              	.LFE130:
+  53              		.section	.text.SysTick_Handler,"ax",%progbits
+  54              		.align	1
+  55              		.global	SysTick_Handler
+  56              		.syntax unified
+  57              		.thumb
+  58              		.thumb_func
+  60              	SysTick_Handler:
+  61              	.LFB131:
+  11:Core/Src/it_handlers.c **** 
+  12:Core/Src/it_handlers.c **** extern uint16_t DelayTickCount;
+  13:Core/Src/it_handlers.c **** 
+  14:Core/Src/it_handlers.c **** void SysTick_Handler(void) 
+  15:Core/Src/it_handlers.c **** {  
+  62              		.loc 1 15 1 is_stmt 1 view -0
+  63              		.cfi_startproc
+  64              		@ args = 0, pretend = 0, frame = 0
+  65              		@ frame_needed = 0, uses_anonymous_args = 0
+  66              		@ link register save eliminated.
+  16:Core/Src/it_handlers.c ****     DelayTickCount++;
+  67              		.loc 1 16 5 view .LVU7
+  68              		.loc 1 16 19 is_stmt 0 view .LVU8
+  69 0000 024A     		ldr	r2, .L5
+  70 0002 1388     		ldrh	r3, [r2]
+  71 0004 0133     		adds	r3, r3, #1
+  72 0006 1380     		strh	r3, [r2]	@ movhi
+  17:Core/Src/it_handlers.c **** } 
+  73              		.loc 1 17 1 view .LVU9
+  74 0008 7047     		bx	lr
+  75              	.L6:
+  76 000a 00BF     		.align	2
+  77              	.L5:
+  78 000c 00000000 		.word	DelayTickCount
+  79              		.cfi_endproc
+  80              	.LFE131:
+  82              		.section	.text.TIM3_IRQHandler,"ax",%progbits
+  83              		.align	1
+  84              		.global	TIM3_IRQHandler
+  85              		.syntax unified
+  86              		.thumb
+  87              		.thumb_func
+  89              	TIM3_IRQHandler:
+  90              	.LFB132:
+  18:Core/Src/it_handlers.c **** 
+  19:Core/Src/it_handlers.c **** extern uint8_t Led1flag;
+  20:Core/Src/it_handlers.c **** 
+  21:Core/Src/it_handlers.c **** extern uint32_t TIM3_counter;
+  22:Core/Src/it_handlers.c **** extern uint32_t PWM_Load;
+  23:Core/Src/it_handlers.c **** 
+  24:Core/Src/it_handlers.c **** void TIM3_IRQHandler(void)
+  25:Core/Src/it_handlers.c **** {
+  91              		.loc 1 25 1 is_stmt 1 view -0
+  92              		.cfi_startproc
+  93              		@ args = 0, pretend = 0, frame = 0
+  94              		@ frame_needed = 0, uses_anonymous_args = 0
+ARM GAS  C:\Users\rpong\AppData\Local\Temp\cci2BcwX.s 			page 3
 
 
-  27:Core/Src/it_handlers.c **** }
-  94              		.loc 1 27 1 is_stmt 0 view .LVU9
-  95 000a 7047     		bx	lr
-  96              	.L9:
-  97              		.align	2
-  98              	.L8:
-  99 000c 00040040 		.word	1073742848
- 100              		.cfi_endproc
- 101              	.LFE132:
- 103              		.section	.text.mydelay,"ax",%progbits
- 104              		.align	1
- 105              		.global	mydelay
- 106              		.syntax unified
- 107              		.thumb
- 108              		.thumb_func
- 110              	mydelay:
- 111              	.LVL0:
- 112              	.LFB133:
-  28:Core/Src/it_handlers.c **** 
-  29:Core/Src/it_handlers.c **** void mydelay(uint32_t delay){  
- 113              		.loc 1 29 29 is_stmt 1 view -0
- 114              		.cfi_startproc
- 115              		@ args = 0, pretend = 0, frame = 0
- 116              		@ frame_needed = 0, uses_anonymous_args = 0
- 117              		@ link register save eliminated.
-  30:Core/Src/it_handlers.c ****     if(DelayTickCount >= delay) DelayTickCount = 0;
- 118              		.loc 1 30 5 view .LVU11
- 119              		.loc 1 30 23 is_stmt 0 view .LVU12
- 120 0000 054B     		ldr	r3, .L13
- 121 0002 1B88     		ldrh	r3, [r3]
- 122              		.loc 1 30 7 view .LVU13
- 123 0004 8342     		cmp	r3, r0
- 124 0006 02D3     		bcc	.L12
- 125              		.loc 1 30 33 is_stmt 1 discriminator 1 view .LVU14
- 126              		.loc 1 30 48 is_stmt 0 discriminator 1 view .LVU15
- 127 0008 034B     		ldr	r3, .L13
- 128 000a 0022     		movs	r2, #0
- 129 000c 1A80     		strh	r2, [r3]	@ movhi
- 130              	.L12:
-  31:Core/Src/it_handlers.c ****     while(DelayTickCount < delay){} //Цикл, благодаря которому происхо�
- 131              		.loc 1 31 35 is_stmt 1 discriminator 1 view .LVU16
- 132              		.loc 1 31 26 discriminator 1 view .LVU17
- 133 000e 024B     		ldr	r3, .L13
- 134 0010 1B88     		ldrh	r3, [r3]
- 135 0012 8342     		cmp	r3, r0
- 136 0014 FBD3     		bcc	.L12
-  32:Core/Src/it_handlers.c **** } ...
- 137              		.loc 1 32 1 is_stmt 0 view .LVU18
- 138 0016 7047     		bx	lr
- 139              	.L14:
- 140              		.align	2
- 141              	.L13:
- 142 0018 00000000 		.word	DelayTickCount
- 143              		.cfi_endproc
- 144              	.LFE133:
- 146              		.text
- 147              	.Letext0:
-ARM GAS  C:\Users\rpong\AppData\Local\Temp\ccHN7TuX.s 			page 4
+  95              		@ link register save eliminated.
+  26:Core/Src/it_handlers.c ****     //сброс флага прерывания таймера UIF
+  27:Core/Src/it_handlers.c ****     CLEAR_BIT(TIM3->SR,TIM_SR_UIF);
+  96              		.loc 1 27 5 view .LVU11
+  97 0000 044A     		ldr	r2, .L8
+  98 0002 1369     		ldr	r3, [r2, #16]
+  99 0004 23F00103 		bic	r3, r3, #1
+ 100 0008 1361     		str	r3, [r2, #16]
+  28:Core/Src/it_handlers.c ****     //CLEAR_BIT(TIM3->SR,TIM_SR_CC1IF);
+  29:Core/Src/it_handlers.c ****     TIM3_counter++;
+ 101              		.loc 1 29 5 view .LVU12
+ 102              		.loc 1 29 17 is_stmt 0 view .LVU13
+ 103 000a 034A     		ldr	r2, .L8+4
+ 104 000c 1368     		ldr	r3, [r2]
+ 105 000e 0133     		adds	r3, r3, #1
+ 106 0010 1360     		str	r3, [r2]
+  30:Core/Src/it_handlers.c ****     //MODIFY_REG(TIM3->CCR1,TIM_CCR1_CCR1, PWM_Load);//настройка значения пере
+  31:Core/Src/it_handlers.c **** }
+ 107              		.loc 1 31 1 view .LVU14
+ 108 0012 7047     		bx	lr
+ 109              	.L9:
+ 110              		.align	2
+ 111              	.L8:
+ 112 0014 00040040 		.word	1073742848
+ 113 0018 00000000 		.word	TIM3_counter
+ 114              		.cfi_endproc
+ 115              	.LFE132:
+ 117              		.section	.text.mydelay,"ax",%progbits
+ 118              		.align	1
+ 119              		.global	mydelay
+ 120              		.syntax unified
+ 121              		.thumb
+ 122              		.thumb_func
+ 124              	mydelay:
+ 125              	.LVL0:
+ 126              	.LFB133:
+  32:Core/Src/it_handlers.c **** 
+  33:Core/Src/it_handlers.c **** //странное из интернета
+  34:Core/Src/it_handlers.c **** /*
+  35:Core/Src/it_handlers.c **** void TIM3_IRQHandler (void)
+  36:Core/Src/it_handlers.c **** { 
+  37:Core/Src/it_handlers.c ****   if(TIM3->SR & TIM_SR_UIF == TIM_SR_UIF){
+  38:Core/Src/it_handlers.c ****     TIM3->SR = 0; 
+  39:Core/Src/it_handlers.c ****     CLEAR_BIT(TIM3->SR,TIM_SR_UIF);
+  40:Core/Src/it_handlers.c ****     CLEAR_BIT(TIM3->SR,TIM_SR_CC1IF);
+  41:Core/Src/it_handlers.c ****     GPIOA->BSRR |= BS(10);         // поднимим ножку
+  42:Core/Src/it_handlers.c ****   }
+  43:Core/Src/it_handlers.c ****  
+  44:Core/Src/it_handlers.c ****   if(Read_BIT(TIM3->SR, TIM_SR_CC1IF) == TIM_SR_CC1IF){       
+  45:Core/Src/it_handlers.c ****     TIM3->SR =0;
+  46:Core/Src/it_handlers.c ****     GPIOA->BSRR |= BR(10);       //опустим ножку         
+  47:Core/Src/it_handlers.c ****   }
+  48:Core/Src/it_handlers.c **** }
+  49:Core/Src/it_handlers.c **** */
+  50:Core/Src/it_handlers.c **** 
+  51:Core/Src/it_handlers.c **** void mydelay(uint32_t delay){  
+ 127              		.loc 1 51 29 is_stmt 1 view -0
+ARM GAS  C:\Users\rpong\AppData\Local\Temp\cci2BcwX.s 			page 4
 
 
- 148              		.file 2 "D:/DMPT/xpack-arm-none-eabi-gcc-13.2.1-1.1/arm-none-eabi/include/machine/_default_types.h
- 149              		.file 3 "D:/DMPT/xpack-arm-none-eabi-gcc-13.2.1-1.1/arm-none-eabi/include/sys/_stdint.h"
- 150              		.file 4 "Core/Inc/../../CMSIS/Devices/Inc/stm32f429xx.h"
-ARM GAS  C:\Users\rpong\AppData\Local\Temp\ccHN7TuX.s 			page 5
+ 128              		.cfi_startproc
+ 129              		@ args = 0, pretend = 0, frame = 0
+ 130              		@ frame_needed = 0, uses_anonymous_args = 0
+ 131              		@ link register save eliminated.
+  52:Core/Src/it_handlers.c ****     if(DelayTickCount >= delay) DelayTickCount = 0;
+ 132              		.loc 1 52 5 view .LVU16
+ 133              		.loc 1 52 23 is_stmt 0 view .LVU17
+ 134 0000 054B     		ldr	r3, .L13
+ 135 0002 1B88     		ldrh	r3, [r3]
+ 136              		.loc 1 52 7 view .LVU18
+ 137 0004 8342     		cmp	r3, r0
+ 138 0006 02D3     		bcc	.L12
+ 139              		.loc 1 52 33 is_stmt 1 discriminator 1 view .LVU19
+ 140              		.loc 1 52 48 is_stmt 0 discriminator 1 view .LVU20
+ 141 0008 034B     		ldr	r3, .L13
+ 142 000a 0022     		movs	r2, #0
+ 143 000c 1A80     		strh	r2, [r3]	@ movhi
+ 144              	.L12:
+  53:Core/Src/it_handlers.c ****     while(DelayTickCount < delay){} //Цикл, благодаря которому происхо�
+ 145              		.loc 1 53 35 is_stmt 1 discriminator 1 view .LVU21
+ 146              		.loc 1 53 26 discriminator 1 view .LVU22
+ 147 000e 024B     		ldr	r3, .L13
+ 148 0010 1B88     		ldrh	r3, [r3]
+ 149 0012 8342     		cmp	r3, r0
+ 150 0014 FBD3     		bcc	.L12
+  54:Core/Src/it_handlers.c **** } ...
+ 151              		.loc 1 54 1 is_stmt 0 view .LVU23
+ 152 0016 7047     		bx	lr
+ 153              	.L14:
+ 154              		.align	2
+ 155              	.L13:
+ 156 0018 00000000 		.word	DelayTickCount
+ 157              		.cfi_endproc
+ 158              	.LFE133:
+ 160              		.text
+ 161              	.Letext0:
+ 162              		.file 2 "D:/DMPT/xpack-arm-none-eabi-gcc-13.2.1-1.1/arm-none-eabi/include/machine/_default_types.h
+ 163              		.file 3 "D:/DMPT/xpack-arm-none-eabi-gcc-13.2.1-1.1/arm-none-eabi/include/sys/_stdint.h"
+ 164              		.file 4 "Core/Inc/../../CMSIS/Devices/Inc/stm32f429xx.h"
+ARM GAS  C:\Users\rpong\AppData\Local\Temp\cci2BcwX.s 			page 5
 
 
 DEFINED SYMBOLS
                             *ABS*:00000000 it_handlers.c
-C:\Users\rpong\AppData\Local\Temp\ccHN7TuX.s:19     .text.ADC_IRQHandler:00000000 $t
-C:\Users\rpong\AppData\Local\Temp\ccHN7TuX.s:25     .text.ADC_IRQHandler:00000000 ADC_IRQHandler
-C:\Users\rpong\AppData\Local\Temp\ccHN7TuX.s:42     .text.ADC_IRQHandler:0000000c $d
-C:\Users\rpong\AppData\Local\Temp\ccHN7TuX.s:47     .text.SysTick_Handler:00000000 $t
-C:\Users\rpong\AppData\Local\Temp\ccHN7TuX.s:53     .text.SysTick_Handler:00000000 SysTick_Handler
-C:\Users\rpong\AppData\Local\Temp\ccHN7TuX.s:71     .text.SysTick_Handler:0000000c $d
-C:\Users\rpong\AppData\Local\Temp\ccHN7TuX.s:76     .text.TIM3_IRQHandler:00000000 $t
-C:\Users\rpong\AppData\Local\Temp\ccHN7TuX.s:82     .text.TIM3_IRQHandler:00000000 TIM3_IRQHandler
-C:\Users\rpong\AppData\Local\Temp\ccHN7TuX.s:99     .text.TIM3_IRQHandler:0000000c $d
-C:\Users\rpong\AppData\Local\Temp\ccHN7TuX.s:104    .text.mydelay:00000000 $t
-C:\Users\rpong\AppData\Local\Temp\ccHN7TuX.s:110    .text.mydelay:00000000 mydelay
-C:\Users\rpong\AppData\Local\Temp\ccHN7TuX.s:142    .text.mydelay:00000018 $d
+C:\Users\rpong\AppData\Local\Temp\cci2BcwX.s:19     .text.ADC_IRQHandler:00000000 $t
+C:\Users\rpong\AppData\Local\Temp\cci2BcwX.s:25     .text.ADC_IRQHandler:00000000 ADC_IRQHandler
+C:\Users\rpong\AppData\Local\Temp\cci2BcwX.s:48     .text.ADC_IRQHandler:00000014 $d
+C:\Users\rpong\AppData\Local\Temp\cci2BcwX.s:54     .text.SysTick_Handler:00000000 $t
+C:\Users\rpong\AppData\Local\Temp\cci2BcwX.s:60     .text.SysTick_Handler:00000000 SysTick_Handler
+C:\Users\rpong\AppData\Local\Temp\cci2BcwX.s:78     .text.SysTick_Handler:0000000c $d
+C:\Users\rpong\AppData\Local\Temp\cci2BcwX.s:83     .text.TIM3_IRQHandler:00000000 $t
+C:\Users\rpong\AppData\Local\Temp\cci2BcwX.s:89     .text.TIM3_IRQHandler:00000000 TIM3_IRQHandler
+C:\Users\rpong\AppData\Local\Temp\cci2BcwX.s:112    .text.TIM3_IRQHandler:00000014 $d
+C:\Users\rpong\AppData\Local\Temp\cci2BcwX.s:118    .text.mydelay:00000000 $t
+C:\Users\rpong\AppData\Local\Temp\cci2BcwX.s:124    .text.mydelay:00000000 mydelay
+C:\Users\rpong\AppData\Local\Temp\cci2BcwX.s:156    .text.mydelay:00000018 $d
 
 UNDEFINED SYMBOLS
+adc
 DelayTickCount
+TIM3_counter

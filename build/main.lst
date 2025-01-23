@@ -1,4 +1,4 @@
-ARM GAS  C:\Users\rpong\AppData\Local\Temp\ccQVHbcJ.s 			page 1
+ARM GAS  C:\Users\rpong\AppData\Local\Temp\ccUxostN.s 			page 1
 
 
    1              		.cpu cortex-m4
@@ -18,18 +18,14 @@ ARM GAS  C:\Users\rpong\AppData\Local\Temp\ccQVHbcJ.s 			page 1
   15              	.Ltext0:
   16              		.cfi_sections	.debug_frame
   17              		.file 1 "Core/Src/main.c"
-  18              		.global	__aeabi_ui2f
-  19              		.global	__aeabi_f2d
-  20              		.global	__aeabi_dmul
-  21              		.global	__aeabi_d2f
-  22              		.section	.text.main,"ax",%progbits
-  23              		.align	1
-  24              		.global	main
-  25              		.syntax unified
-  26              		.thumb
-  27              		.thumb_func
-  29              	main:
-  30              	.LFB130:
+  18              		.section	.text.main,"ax",%progbits
+  19              		.align	1
+  20              		.global	main
+  21              		.syntax unified
+  22              		.thumb
+  23              		.thumb_func
+  25              	main:
+  26              	.LFB130:
    1:Core/Src/main.c **** #include "../Inc/init.h"
    2:Core/Src/main.c **** #include "../Inc/it_handlers.h"
    3:Core/Src/main.c **** 
@@ -38,198 +34,147 @@ ARM GAS  C:\Users\rpong\AppData\Local\Temp\ccQVHbcJ.s 			page 1
    6:Core/Src/main.c **** uint8_t Led1flag = 0;
    7:Core/Src/main.c **** 
    8:Core/Src/main.c **** float res; // переменная для результата
-   9:Core/Src/main.c **** int adc;
+   9:Core/Src/main.c **** uint16_t adc;
   10:Core/Src/main.c **** 
   11:Core/Src/main.c **** uint32_t TIM3_counter = 0;
   12:Core/Src/main.c **** 
-  13:Core/Src/main.c **** uint32_t PWM_Load = 800;
+  13:Core/Src/main.c **** uint32_t PWM_Load = 4000;
   14:Core/Src/main.c **** 
   15:Core/Src/main.c **** uint32_t TIM3_CNT = 0;
   16:Core/Src/main.c **** 
-  17:Core/Src/main.c **** 
-  18:Core/Src/main.c **** int main(void) 
-  19:Core/Src/main.c **** { 
-  31              		.loc 1 19 1 view -0
-  32              		.cfi_startproc
-  33              		@ Volatile: function does not return.
-  34              		@ args = 0, pretend = 0, frame = 0
-  35              		@ frame_needed = 0, uses_anonymous_args = 0
-  36 0000 08B5     		push	{r3, lr}
-  37              	.LCFI0:
-  38              		.cfi_def_cfa_offset 8
-  39              		.cfi_offset 3, -8
-ARM GAS  C:\Users\rpong\AppData\Local\Temp\ccQVHbcJ.s 			page 2
+  17:Core/Src/main.c **** void timer3(void);
+  18:Core/Src/main.c **** 
+  19:Core/Src/main.c **** int main(void) 
+  20:Core/Src/main.c **** { 
+  27              		.loc 1 20 1 view -0
+  28              		.cfi_startproc
+  29              		@ Volatile: function does not return.
+  30              		@ args = 0, pretend = 0, frame = 0
+  31              		@ frame_needed = 0, uses_anonymous_args = 0
+  32 0000 08B5     		push	{r3, lr}
+  33              	.LCFI0:
+  34              		.cfi_def_cfa_offset 8
+  35              		.cfi_offset 3, -8
+  36              		.cfi_offset 14, -4
+  21:Core/Src/main.c ****     GPIO_Init();
+  37              		.loc 1 21 5 view .LVU1
+ARM GAS  C:\Users\rpong\AppData\Local\Temp\ccUxostN.s 			page 2
 
 
-  40              		.cfi_offset 14, -4
-  20:Core/Src/main.c ****     GPIO_Init();
-  41              		.loc 1 20 5 view .LVU1
-  42 0002 FFF7FEFF 		bl	GPIO_Init
-  43              	.LVL0:
-  21:Core/Src/main.c ****     RCC_Init(); // Инициализация тактирования системы 
-  44              		.loc 1 21 5 view .LVU2
-  45 0006 FFF7FEFF 		bl	RCC_Init
-  46              	.LVL1:
-  22:Core/Src/main.c ****     SysTick_Init();
-  47              		.loc 1 22 5 view .LVU3
-  48 000a FFF7FEFF 		bl	SysTick_Init
-  49              	.LVL2:
-  23:Core/Src/main.c ****     TIM_Init();
-  50              		.loc 1 23 5 view .LVU4
-  51 000e FFF7FEFF 		bl	TIM_Init
-  52              	.LVL3:
-  24:Core/Src/main.c ****     ADC_Init();
-  53              		.loc 1 24 5 view .LVU5
-  54 0012 FFF7FEFF 		bl	ADC_Init
-  55              	.LVL4:
-  56              	.L2:
-  25:Core/Src/main.c **** 
-  26:Core/Src/main.c ****     while(1) {
-  57              		.loc 1 26 5 view .LVU6
-  27:Core/Src/main.c **** 
-  28:Core/Src/main.c **** 
-  29:Core/Src/main.c ****         TIM3_CNT = READ_REG(TIM3->CNT);
-  58              		.loc 1 29 9 view .LVU7
-  59              		.loc 1 29 20 is_stmt 0 view .LVU8
-  60 0016 124B     		ldr	r3, .L4+8
-  61 0018 5A6A     		ldr	r2, [r3, #36]
-  62              		.loc 1 29 18 view .LVU9
-  63 001a 124B     		ldr	r3, .L4+12
-  64 001c 1A60     		str	r2, [r3]
-  30:Core/Src/main.c ****         //MODIFY_REG(TIM2->CCR1,TIM_CCR1_CCR1, PWM_Load);
-  31:Core/Src/main.c ****         //WRITE_REG(TIM2->CCR1,PWM_Load);
-  32:Core/Src/main.c ****         res = (float)ADC1->DR * 3.3 / 4096.0 ; // пересчет в напряжение
-  65              		.loc 1 32 9 is_stmt 1 view .LVU10
-  66              		.loc 1 32 26 is_stmt 0 view .LVU11
-  67 001e 124C     		ldr	r4, .L4+16
-  68 0020 E06C     		ldr	r0, [r4, #76]
-  69              		.loc 1 32 15 view .LVU12
-  70 0022 FFF7FEFF 		bl	__aeabi_ui2f
-  71              	.LVL5:
-  72 0026 FFF7FEFF 		bl	__aeabi_f2d
-  73              	.LVL6:
-  74              		.loc 1 32 31 view .LVU13
-  75 002a 0BA3     		adr	r3, .L4
-  76 002c D3E90023 		ldrd	r2, [r3]
-  77 0030 FFF7FEFF 		bl	__aeabi_dmul
-  78              	.LVL7:
-  79              		.loc 1 32 37 view .LVU14
-  80 0034 0022     		movs	r2, #0
-  81 0036 0D4B     		ldr	r3, .L4+20
-  82 0038 FFF7FEFF 		bl	__aeabi_dmul
-  83              	.LVL8:
-ARM GAS  C:\Users\rpong\AppData\Local\Temp\ccQVHbcJ.s 			page 3
+  38 0002 FFF7FEFF 		bl	GPIO_Init
+  39              	.LVL0:
+  22:Core/Src/main.c ****     RCC_Init(); // Инициализация тактирования системы 
+  40              		.loc 1 22 5 view .LVU2
+  41 0006 FFF7FEFF 		bl	RCC_Init
+  42              	.LVL1:
+  23:Core/Src/main.c ****     SysTick_Init();
+  43              		.loc 1 23 5 view .LVU3
+  44 000a FFF7FEFF 		bl	SysTick_Init
+  45              	.LVL2:
+  24:Core/Src/main.c ****     TIM_Init();
+  46              		.loc 1 24 5 view .LVU4
+  47 000e FFF7FEFF 		bl	TIM_Init
+  48              	.LVL3:
+  25:Core/Src/main.c ****     ADC_Init();
+  49              		.loc 1 25 5 view .LVU5
+  50 0012 FFF7FEFF 		bl	ADC_Init
+  51              	.LVL4:
+  52              	.L2:
+  26:Core/Src/main.c ****     //timer3();
+  27:Core/Src/main.c ****     //SET_BIT(TIM3->DIER,TIM_DIER_UIE);//включение прерываний
+  28:Core/Src/main.c ****     //NVIC_EnableIRQ(TIM3_IRQn);//разрешаем прерывания в регистре ко�
+  29:Core/Src/main.c ****     //NVIC_SetPriority(TIM3_IRQn, NVIC_EncodePriority(NVIC_GetPriorityGrouping(), 3, 0)); //Уст�
+  30:Core/Src/main.c ****     //WRITE_REG(TIM3->CCR1,PWM_Load);
+  31:Core/Src/main.c ****     while(1) {
+  53              		.loc 1 31 5 view .LVU6
+  32:Core/Src/main.c ****         TIM3->CCR1 = 2*adc;
+  54              		.loc 1 32 9 discriminator 1 view .LVU7
+  55              		.loc 1 32 23 is_stmt 0 discriminator 1 view .LVU8
+  56 0016 034B     		ldr	r3, .L4
+  57 0018 1B88     		ldrh	r3, [r3]
+  58 001a 5B00     		lsls	r3, r3, #1
+  59              		.loc 1 32 20 discriminator 1 view .LVU9
+  60 001c 024A     		ldr	r2, .L4+4
+  61 001e 5363     		str	r3, [r2, #52]
+  31:Core/Src/main.c ****         TIM3->CCR1 = 2*adc;
+  62              		.loc 1 31 10 is_stmt 1 view .LVU10
+  63 0020 F9E7     		b	.L2
+  64              	.L5:
+  65 0022 00BF     		.align	2
+  66              	.L4:
+  67 0024 00000000 		.word	adc
+  68 0028 00040040 		.word	1073742848
+  69              		.cfi_endproc
+  70              	.LFE130:
+  72              		.global	TIM3_CNT
+  73              		.section	.bss.TIM3_CNT,"aw",%nobits
+  74              		.align	2
+  77              	TIM3_CNT:
+  78 0000 00000000 		.space	4
+  79              		.global	PWM_Load
+  80              		.section	.data.PWM_Load,"aw"
+  81              		.align	2
+  84              	PWM_Load:
+  85 0000 A00F0000 		.word	4000
+  86              		.global	TIM3_counter
+  87              		.section	.bss.TIM3_counter,"aw",%nobits
+ARM GAS  C:\Users\rpong\AppData\Local\Temp\ccUxostN.s 			page 3
 
 
-  84 003c FFF7FEFF 		bl	__aeabi_d2f
-  85              	.LVL9:
-  86              		.loc 1 32 13 view .LVU15
-  87 0040 0B4B     		ldr	r3, .L4+24
-  88 0042 1860     		str	r0, [r3]	@ float
-  33:Core/Src/main.c ****         adc = ADC1->DR;
-  89              		.loc 1 33 9 is_stmt 1 view .LVU16
-  90              		.loc 1 33 19 is_stmt 0 view .LVU17
-  91 0044 E26C     		ldr	r2, [r4, #76]
-  92              		.loc 1 33 13 view .LVU18
-  93 0046 0B4B     		ldr	r3, .L4+28
-  94 0048 1A60     		str	r2, [r3]
-  34:Core/Src/main.c ****         mydelay(1);
-  95              		.loc 1 34 9 is_stmt 1 discriminator 1 view .LVU19
-  96 004a 0120     		movs	r0, #1
-  97 004c FFF7FEFF 		bl	mydelay
-  98              	.LVL10:
-  26:Core/Src/main.c **** 
-  99              		.loc 1 26 10 view .LVU20
- 100 0050 E1E7     		b	.L2
- 101              	.L5:
- 102 0052 00BFAFF3 		.align	3
- 102      0080
- 103              	.L4:
- 104 0058 66666666 		.word	1717986918
- 105 005c 66660A40 		.word	1074423398
- 106 0060 00040040 		.word	1073742848
- 107 0064 00000000 		.word	TIM3_CNT
- 108 0068 00200140 		.word	1073815552
- 109 006c 0000303F 		.word	1060110336
- 110 0070 00000000 		.word	res
- 111 0074 00000000 		.word	adc
- 112              		.cfi_endproc
- 113              	.LFE130:
- 115              		.global	TIM3_CNT
- 116              		.section	.bss.TIM3_CNT,"aw",%nobits
- 117              		.align	2
- 120              	TIM3_CNT:
- 121 0000 00000000 		.space	4
- 122              		.global	PWM_Load
- 123              		.section	.data.PWM_Load,"aw"
- 124              		.align	2
- 127              	PWM_Load:
- 128 0000 20030000 		.word	800
- 129              		.global	TIM3_counter
- 130              		.section	.bss.TIM3_counter,"aw",%nobits
- 131              		.align	2
- 134              	TIM3_counter:
- 135 0000 00000000 		.space	4
- 136              		.global	adc
- 137              		.section	.bss.adc,"aw",%nobits
- 138              		.align	2
- 141              	adc:
- 142 0000 00000000 		.space	4
- 143              		.global	res
- 144              		.section	.bss.res,"aw",%nobits
- 145              		.align	2
-ARM GAS  C:\Users\rpong\AppData\Local\Temp\ccQVHbcJ.s 			page 4
-
-
- 148              	res:
- 149 0000 00000000 		.space	4
- 150              		.global	Led1flag
- 151              		.section	.bss.Led1flag,"aw",%nobits
- 154              	Led1flag:
- 155 0000 00       		.space	1
- 156              		.global	DelayTickCount
- 157              		.section	.bss.DelayTickCount,"aw",%nobits
- 158              		.align	1
- 161              	DelayTickCount:
- 162 0000 0000     		.space	2
- 163              		.text
- 164              	.Letext0:
- 165              		.file 2 "D:/DMPT/xpack-arm-none-eabi-gcc-13.2.1-1.1/arm-none-eabi/include/machine/_default_types.h
- 166              		.file 3 "D:/DMPT/xpack-arm-none-eabi-gcc-13.2.1-1.1/arm-none-eabi/include/sys/_stdint.h"
- 167              		.file 4 "Core/Src/../Inc/../../CMSIS/Devices/Inc/stm32f429xx.h"
- 168              		.file 5 "Core/Src/../Inc/init.h"
- 169              		.file 6 "Core/Src/../Inc/it_handlers.h"
-ARM GAS  C:\Users\rpong\AppData\Local\Temp\ccQVHbcJ.s 			page 5
+  88              		.align	2
+  91              	TIM3_counter:
+  92 0000 00000000 		.space	4
+  93              		.global	adc
+  94              		.section	.bss.adc,"aw",%nobits
+  95              		.align	1
+  98              	adc:
+  99 0000 0000     		.space	2
+ 100              		.global	res
+ 101              		.section	.bss.res,"aw",%nobits
+ 102              		.align	2
+ 105              	res:
+ 106 0000 00000000 		.space	4
+ 107              		.global	Led1flag
+ 108              		.section	.bss.Led1flag,"aw",%nobits
+ 111              	Led1flag:
+ 112 0000 00       		.space	1
+ 113              		.global	DelayTickCount
+ 114              		.section	.bss.DelayTickCount,"aw",%nobits
+ 115              		.align	1
+ 118              	DelayTickCount:
+ 119 0000 0000     		.space	2
+ 120              		.text
+ 121              	.Letext0:
+ 122              		.file 2 "D:/DMPT/xpack-arm-none-eabi-gcc-13.2.1-1.1/arm-none-eabi/include/machine/_default_types.h
+ 123              		.file 3 "D:/DMPT/xpack-arm-none-eabi-gcc-13.2.1-1.1/arm-none-eabi/include/sys/_stdint.h"
+ 124              		.file 4 "Core/Src/../Inc/../../CMSIS/Devices/Inc/stm32f429xx.h"
+ 125              		.file 5 "Core/Src/../Inc/init.h"
+ARM GAS  C:\Users\rpong\AppData\Local\Temp\ccUxostN.s 			page 4
 
 
 DEFINED SYMBOLS
                             *ABS*:00000000 main.c
-C:\Users\rpong\AppData\Local\Temp\ccQVHbcJ.s:23     .text.main:00000000 $t
-C:\Users\rpong\AppData\Local\Temp\ccQVHbcJ.s:29     .text.main:00000000 main
-C:\Users\rpong\AppData\Local\Temp\ccQVHbcJ.s:104    .text.main:00000058 $d
-C:\Users\rpong\AppData\Local\Temp\ccQVHbcJ.s:120    .bss.TIM3_CNT:00000000 TIM3_CNT
-C:\Users\rpong\AppData\Local\Temp\ccQVHbcJ.s:148    .bss.res:00000000 res
-C:\Users\rpong\AppData\Local\Temp\ccQVHbcJ.s:141    .bss.adc:00000000 adc
-C:\Users\rpong\AppData\Local\Temp\ccQVHbcJ.s:117    .bss.TIM3_CNT:00000000 $d
-C:\Users\rpong\AppData\Local\Temp\ccQVHbcJ.s:127    .data.PWM_Load:00000000 PWM_Load
-C:\Users\rpong\AppData\Local\Temp\ccQVHbcJ.s:124    .data.PWM_Load:00000000 $d
-C:\Users\rpong\AppData\Local\Temp\ccQVHbcJ.s:134    .bss.TIM3_counter:00000000 TIM3_counter
-C:\Users\rpong\AppData\Local\Temp\ccQVHbcJ.s:131    .bss.TIM3_counter:00000000 $d
-C:\Users\rpong\AppData\Local\Temp\ccQVHbcJ.s:138    .bss.adc:00000000 $d
-C:\Users\rpong\AppData\Local\Temp\ccQVHbcJ.s:145    .bss.res:00000000 $d
-C:\Users\rpong\AppData\Local\Temp\ccQVHbcJ.s:154    .bss.Led1flag:00000000 Led1flag
-C:\Users\rpong\AppData\Local\Temp\ccQVHbcJ.s:155    .bss.Led1flag:00000000 $d
-C:\Users\rpong\AppData\Local\Temp\ccQVHbcJ.s:161    .bss.DelayTickCount:00000000 DelayTickCount
-C:\Users\rpong\AppData\Local\Temp\ccQVHbcJ.s:158    .bss.DelayTickCount:00000000 $d
+C:\Users\rpong\AppData\Local\Temp\ccUxostN.s:19     .text.main:00000000 $t
+C:\Users\rpong\AppData\Local\Temp\ccUxostN.s:25     .text.main:00000000 main
+C:\Users\rpong\AppData\Local\Temp\ccUxostN.s:67     .text.main:00000024 $d
+C:\Users\rpong\AppData\Local\Temp\ccUxostN.s:98     .bss.adc:00000000 adc
+C:\Users\rpong\AppData\Local\Temp\ccUxostN.s:77     .bss.TIM3_CNT:00000000 TIM3_CNT
+C:\Users\rpong\AppData\Local\Temp\ccUxostN.s:74     .bss.TIM3_CNT:00000000 $d
+C:\Users\rpong\AppData\Local\Temp\ccUxostN.s:84     .data.PWM_Load:00000000 PWM_Load
+C:\Users\rpong\AppData\Local\Temp\ccUxostN.s:81     .data.PWM_Load:00000000 $d
+C:\Users\rpong\AppData\Local\Temp\ccUxostN.s:91     .bss.TIM3_counter:00000000 TIM3_counter
+C:\Users\rpong\AppData\Local\Temp\ccUxostN.s:88     .bss.TIM3_counter:00000000 $d
+C:\Users\rpong\AppData\Local\Temp\ccUxostN.s:95     .bss.adc:00000000 $d
+C:\Users\rpong\AppData\Local\Temp\ccUxostN.s:105    .bss.res:00000000 res
+C:\Users\rpong\AppData\Local\Temp\ccUxostN.s:102    .bss.res:00000000 $d
+C:\Users\rpong\AppData\Local\Temp\ccUxostN.s:111    .bss.Led1flag:00000000 Led1flag
+C:\Users\rpong\AppData\Local\Temp\ccUxostN.s:112    .bss.Led1flag:00000000 $d
+C:\Users\rpong\AppData\Local\Temp\ccUxostN.s:118    .bss.DelayTickCount:00000000 DelayTickCount
+C:\Users\rpong\AppData\Local\Temp\ccUxostN.s:115    .bss.DelayTickCount:00000000 $d
 
 UNDEFINED SYMBOLS
-__aeabi_ui2f
-__aeabi_f2d
-__aeabi_dmul
-__aeabi_d2f
 GPIO_Init
 RCC_Init
 SysTick_Init
 TIM_Init
 ADC_Init
-mydelay
